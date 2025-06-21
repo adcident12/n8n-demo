@@ -8,8 +8,8 @@ services:
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - WEBHOOK_TUNNEL_URL=https://e0ca-27-55-89-232.ngrok-free.app
-      - WEBHOOK_URL=https://e0ca-27-55-89-232.ngrok-free.app
+      - WEBHOOK_TUNNEL_URL= # Set this to your ngrok URL
+      - WEBHOOK_URL= # Set this to your ngrok URL
       - GENERIC_TIMEZONE=Asia/Bangkok
     volumes:
       - n8n_data:/home/node/.n8n
