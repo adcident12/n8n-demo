@@ -1,0 +1,48 @@
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_TUNNEL_URL=https://e0ca-27-55-89-232.ngrok-free.app
+      - WEBHOOK_URL=https://e0ca-27-55-89-232.ngrok-free.app
+      - GENERIC_TIMEZONE=Asia/Bangkok
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./local-files:/files
+
+  vector-postgres:
+    image: ankane/pgvector
+    container_name: vector-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vector
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vector_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - vector_pg_data:/var/lib/postgresql/data
+
+  vector-pgadmin:
+    image: dpage/pgadmin4
+    container_name: vector-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: vectoradmin@example.com
+      PGADMIN_DEFAULT_PASSWORD: vector123
+    ports:
+      - "5051:80"
+    volumes:
+      - vector_pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - vector-postgres
+
+volumes:
+  n8n_data:
+  vector_pg_data:
+  vector_pgadmin_data:

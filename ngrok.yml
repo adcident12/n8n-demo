@@ -1,0 +1,12 @@
+version: 3
+
+agent:
+  authtoken: # Your ngrok authtoken here
+  # You can get it from https://ngrok.com
+tunnels:
+  n8n:
+    proto: http
+    addr: host.docker.internal:5678 # Port for n8n
+  vector-pgadmin:
+    proto: http
+    addr: host.docker.internal:5051 # Port for pgAdmin
