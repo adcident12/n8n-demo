@@ -1,6 +1,6 @@
 # n8n-demo
 <a href="https://youtube.com/playlist?list=PLh6STJoQwVDuXsimbs976w8G6HIWnYTwl" target="_blank">Watch video</a>
-# Example n8n Workflow: Web Content Processing with AI
+# Bonus Example n8n Workflow: Web Content Processing with AI
 
 [English](#english) | [ไทย](#thai)
 
