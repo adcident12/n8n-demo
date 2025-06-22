@@ -1,5 +1,3 @@
 pip install fastapi uvicorn aiohttp beautifulsoup4 selenium lxml
 
-python api.py
-
-uvicorn api:app --host 0.0.0.0 --port 7890 --reload
+python scraper.py
