@@ -1,6 +1,4 @@
-# n8n-demo
-# n8n Workflow: Web Content Processing with AI
-# n8n Workflow: การประมวลผลเนื้อหาเว็บด้วย AI
+# Example n8n Workflow: Web Content Processing with AI
 
 [English](#english) | [ไทย](#thai)
 
