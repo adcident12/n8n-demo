@@ -2,7 +2,7 @@
 
 [🎥 Watch Video](https://www.youtube.com/playlist?list=PLh6STJoQwVDvgByTQCbuRdlpG4LZ5vYOV)
 
-## Bonus Example n8n Workflow: Web Content Processing with AI AND Create Chat Bot From Scraper
+## Bonus Example n8n Workflow: Web Content Processing with AI AND Create Line Chat Bot From Scraper
 
 [English](#english) | [ไทย](#ไทย)
 
