@@ -2,7 +2,7 @@
 
 [🎥 Watch Video](https://www.youtube.com/playlist?list=PLh6STJoQwVDvgByTQCbuRdlpG4LZ5vYOV)
 
-## Bonus Example n8n Workflow: Web Content Processing with AI AND Create Line Chat Bot From Scraper
+## Bonus Example n8n Workflow: Web Content Processing with AI AND Create Line Chat Bot From Scraper AND Voice Bot From Scraper
 
 [English](#english) | [ไทย](#ไทย)
 
@@ -36,25 +36,25 @@ This n8n workflow automates the process of extracting important content from mul
 5. **Output to Discord**  
    - Sends messages via Discord webhook  
    - Loop Over Items supported
-   
-6. **Insert into Vector DB**
-   - Delete all rows in Postgres PGVector Store first
-   - Send message to save in Postgres PGVector Store
+
+6. **Insert into Vector DB**  
+   - Delete all rows in Postgres PGVector Store first  
+   - Send message to save in Postgres PGVector Store  
    - Notify in the morning in the group chat to inform that there is a new update
 
 #### Setup Instructions
 
-- Add Line API
-- Configure 5 URLs to monitor
-- Install Ollama and your chat model
-- Set up Discord Webhook URL
+- Add Line API  
+- Configure 5 URLs to monitor  
+- Install Ollama and your chat model  
+- Set up Discord Webhook URL  
 - Adjust schedule trigger as needed
 
 #### Use Cases
 
-- News aggregation
-- Research monitoring
-- Content summarization
+- News aggregation  
+- Research monitoring  
+- Content summarization  
 - Competitive analysis
 
 ---
@@ -86,16 +86,64 @@ This workflow adds a conversational AI system that connects to a LINE Messaging 
 
 #### Setup Instructions
 
-- Connect LINE bot to n8n Webhook
-- Generate embeddings with Ollama and insert into PGVector
-- Configure Gemini API Key
+- Connect LINE bot to n8n Webhook  
+- Generate embeddings with Ollama and insert into PGVector  
+- Configure Gemini API Key  
 - Reply via HTTP Request using LINE API
 
 #### Use Cases
 
-- Document-based Q&A
-- Scraper chatbot
+- Document-based Q&A  
+- Scraper chatbot  
 - Internal knowledge assistant via LINE
+
+---
+
+### 🗣️ Workflow 3: AI Voice Q&A System via Webhook + Vector DB
+
+#### Overview  
+This workflow allows users to ask questions using voice input via webhook, and get intelligent answers from an AI Agent connected to a vector knowledge base (PGVector). It enables a seamless voice-enabled chatbot experience using Google Gemini, embeddings from Ollama, and Postgres as memory and vector store.
+
+#### Components
+
+1. **Webhook (Voice)**  
+   - Receives POST requests containing voice-based input or transcription  
+
+2. **Edit Fields (Voice)**  
+   - Formats and prepares the incoming voice data
+
+3. **AI Agent**  
+   - Google Gemini Chat Model  
+   - Uses Postgres Chat Memory  
+   - Tools: Calculator + Vector Retrieval
+
+4. **Vector Store Retrieval**  
+   - Searches PGVector for relevant documents  
+   - Uses embeddings from Ollama
+
+5. **Response Generation**  
+   - AI Agent generates response using memory + vector search
+
+6. **Code Node**  
+   - Transforms or prepares the final answer
+
+7. **Respond to Webhook**  
+   - Sends answer back to original source (e.g., voice bot)
+
+#### Setup Instructions
+
+- Connect your voice platform to the Webhook  
+- Use voice transcription service or pre-transcribed text  
+- Generate document embeddings with Ollama  
+- Connect to Postgres for chat memory and vector store  
+- Configure Gemini API Key
+
+#### Use Cases
+
+- Voice assistant for documents  
+- Hands-free internal help system  
+- FAQ via audio commands  
+- Smart IVR with real-time AI search
 
 ---
 
@@ -129,23 +177,23 @@ Workflow นี้จะช่วยดึงข้อมูลจากหล�
    - รองรับหลายรายการ (Loop Over Items)
 
 6. **Insert ลง Vector DB**  
-   - ลบทุก Row ใน Postgres PGVector Store ก่อน
-   - ส่งข้อความไปบันทึกลง Postgres PGVector Store
+   - ลบทุก Row ใน Postgres PGVector Store ก่อน  
+   - ส่งข้อความไปบันทึกลง Postgres PGVector Store  
    - แจ้งเตือนเข้าไปในกลุ่ม แชท เพื่อบอกว่ามีการ Update ข้อมูลใหม่
 
 #### การตั้งค่า
 
-- เพิ่ม Line API
-- เพิ่ม URL ของเว็บไซต์ที่ต้องการ 5 แห่ง
-- ติดตั้ง Ollama และโหลดโมเดล Chat
-- ตั้งค่า Discord Webhook
+- เพิ่ม Line API  
+- เพิ่ม URL ของเว็บไซต์ที่ต้องการ 5 แห่ง  
+- ติดตั้ง Ollama และโหลดโมเดล Chat  
+- ตั้งค่า Discord Webhook  
 - ตั้งเวลา Schedule Trigger
 
 #### ตัวอย่างการใช้งาน
 
-- ตรวจสอบข่าว
-- สรุปบทความงานวิจัย
-- ติดตามคู่แข่ง
+- ตรวจสอบข่าว  
+- สรุปบทความงานวิจัย  
+- ติดตามคู่แข่ง  
 - แชร์ข้อมูลอัตโนมัติ
 
 ---
@@ -177,16 +225,64 @@ Workflow นี้ให้คุณสร้างระบบ AI ตอบค�
 
 #### การตั้งค่า
 
-- เชื่อม Webhook จาก LINE ไปยัง n8n
-- สร้าง embedding จากเนื้อหาด้วย Ollama แล้วใส่ใน PGVector
-- ตั้งค่า API Key ของ Gemini
+- เชื่อม Webhook จาก LINE ไปยัง n8n  
+- สร้าง embedding จากเนื้อหาด้วย Ollama แล้วใส่ใน PGVector  
+- ตั้งค่า API Key ของ Gemini  
 - ส่งคำตอบผ่าน HTTP Request ไปยัง LINE API
 
 #### ตัวอย่างการใช้งาน
 
-- Chatbot ตอบคำถามจากเอกสาร
-- ระบบช่วยตอบคำถามอัตโนมัติจากการ Scraper
+- Chatbot ตอบคำถามจากเอกสาร  
+- ระบบช่วยตอบคำถามอัตโนมัติจากการ Scraper  
 - LINE assistant chatbot
+
+---
+
+### 🗣️ Workflow 3: ระบบถามตอบด้วยเสียง AI ผ่าน Webhook + Vector DB
+
+#### ภาพรวม  
+Workflow นี้ช่วยให้ผู้ใช้สามารถส่งคำถามด้วยเสียงผ่าน Webhook และรับคำตอบที่ฉลาดจาก AI Agent ที่เชื่อมต่อกับฐานความรู้แบบเวกเตอร์ (PGVector) เพื่อสร้างระบบ AI Voice Assistant ที่ตอบคำถามแบบมีบริบทจากเอกสารหรือข้อมูลในองค์กร
+
+#### ส่วนประกอบ
+
+1. **Webhook (Voice)**  
+   - รับคำถามจากเสียงหรือข้อความที่แปลงจากเสียงผ่าน Webhook  
+
+2. **Edit Fields (Voice)**  
+   - เตรียมรูปแบบข้อมูลเสียงให้พร้อมใช้งาน  
+
+3. **AI Agent**  
+   - ใช้ Google Gemini Chat Model  
+   - ใช้หน่วยความจำ Postgres Chat Memory  
+   - เครื่องมือ: เครื่องคิดเลข + Vector Retrieval
+
+4. **Vector Retrieval**  
+   - ค้นหาข้อมูลที่เกี่ยวข้องจาก PGVector  
+   - ใช้ Embeddings จาก Ollama
+
+5. **การสร้างคำตอบ**  
+   - AI สร้างคำตอบโดยใช้ทั้งความจำและการค้นหาจากเวกเตอร์  
+
+6. **โค้ด Node**  
+   - ปรับแต่งข้อความคำตอบก่อนส่งกลับ  
+
+7. **ตอบกลับ Webhook**  
+   - ส่งคำตอบกลับไปยังผู้ใช้งานเดิม (เช่น ระบบ Voice หรือ LINE)
+
+#### การตั้งค่า
+
+- เชื่อม Webhook กับระบบเสียงของคุณ  
+- ใช้บริการถอดเสียงหรือส่งข้อความที่ถอดมาแล้ว  
+- สร้าง embedding จากเอกสารด้วย Ollama  
+- เชื่อมต่อกับ Postgres สำหรับ memory และ vector  
+- ตั้งค่า API Key ของ Gemini
+
+#### ตัวอย่างการใช้งาน
+
+- ผู้ช่วยภายในที่ตอบด้วยเสียง  
+- ระบบตอบคำถามแบบแฮนด์ฟรี  
+- IVR ฉลาดที่ใช้ AI  
+- Chatbot เสียงที่มีฐานความรู้
 
 ---
 

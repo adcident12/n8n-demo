@@ -1,0 +1,352 @@
+{
+  "name": "Dota2 Bot Sound to Text & Text to Sound",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        -60
+      ],
+      "id": "fe1904e6-5675-451f-bbe4-20fd422d713e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "D1yAGVrFhpeq0HS2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        140
+      ],
+      "id": "ddbb3b89-7ed1-4b24-8c9e-f6a9421690a0",
+      "name": "Google Gemini Chat Model (Retrieve )",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "D1yAGVrFhpeq0HS2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableName": "n8n_dota2_meta_vectors",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        -200,
+        142.5
+      ],
+      "id": "641d7372-793c-4e8e-af8d-c52d90ab796d",
+      "name": "Postgres PGVector Store (Retrieve )",
+      "credentials": {
+        "postgres": {
+          "id": "G7pHv96kiHDCnHyU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Use this knowledge base to answer questions from the user",
+        "topK": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -100,
+        -57.5
+      ],
+      "id": "95428239-7dc6-40af-a972-d7d5338dd728",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        180,
+        -60
+      ],
+      "id": "a9d40a94-192e-437a-bd4f-de25551aad9e",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "tableName": "n8n_chat_histories_dota2meta",
+        "contextWindowLength": 4
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -220,
+        -60
+      ],
+      "id": "7b5979ff-b3b8-4e79-a6aa-4d223c7b7929",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "G7pHv96kiHDCnHyU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        340
+      ],
+      "id": "4d6b2ef1-c567-449f-b6c0-9821343bb7b1",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xNJED3juwaq1BWM8",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "DOTA/MOBA AI Assistant System Message\n\nบทบาทหลัก:\nคุณคือ AI ผู้ช่วยด้านเกม DOTA 2 และ MOBA ที่มีความเชี่ยวชาญสูง หน้าที่ของคุณคือให้คำตอบที่แม่นยำและเป็นปัจจุบัน โดยดึงข้อมูลจาก เครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ที่เชื่อมกับฐานข้อมูล เช่น vector store\n\nคำจำกัดความ:\n- แครี่ (Carry) = ตำแหน่ง 1, ฮีโร่หลักของทีม \n- มิดเลน (Midlane) = ตำแหน่ง 2, เลนกลาง\n- ออฟเลน (Offlane) = ตำแหน่ง 3, เลนยาก\n- ซัพพอร์ต (Support) = ตำแหน่ง 4, ซัพพอร์ตเสริม, support 4\n- ฮาร์ดซัพพอร์ต (Hard Support) = ตำแหน่ง 5, ซัพพอร์ตหลัก, support 5\n- Facet = ความสามารถพิเศษเฉพาะของฮีโร่\n\nแนวทางการทำงาน:\n- เครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ที่สามารถค้นหาข้อมูลจากฐานความรู้หรือ vector store ได้\n- ต้องตรวจสอบข้อมูลกับฐานก่อนเสมอ หากไม่พบหรือไม่แน่ใจ ให้แจ้งว่า \"ต้องตรวจสอบข้อมูลเพิ่มเติม\"\n- หากไม่มีข้อมูลจากเครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ให้ตอบว่า: \"ไม่พบข้อมูลที่เกี่ยวข้องในฐานข้อมูลปัจจุบัน\"\n\nรูปแบบการตอบ:\n- ตอบเป็นข้อความธรรมดา เท่านั้น (ไม่ใช้ JSON, object หรือ Markdown code block)\n- ใช้ ภาษาไทยที่เข้าใจง่าย เหมาะกับผู้เล่นทั่วไป\n- ต้องเป็น ประโยคต่อเนื่อง แบบบทความสั้น ไม่ใช้ Bullet หรือหัวข้อ\n\nข้อมูลที่ต้องมีในคำตอบ:\n1. ชื่อ Facet และคำอธิบายชัดเจนว่าเกิดอะไรขึ้น\n2. วิธีใช้งานในเกมจริง และผลกระทบต่อการเล่น\n3. สถานการณ์ที่เหมาะสม และจับคู่กับฮีโร่แบบใด\n4. จุดเด่นและข้อจำกัด ของ Facet นั้น\n\nข้อห้ามเด็ดขาด:\n- ห้ามใช้ JSON หรือ Markdown code block\n- ห้ามดึงข้อมูลจากแหล่งที่ไม่ผ่านเครื่องมือที่เรียกว่า \"Answer questions with a vector store\"\n- ห้ามสร้างข้อมูลขึ้นมาเอง\n- ห้ามใช้ศัพท์หรือรูปประโยคที่ซับซ้อนจนเกินไป\n\nตัวอย่างคำตอบ:\nคำถาม: Pudge มี facet อะไรบ้าง  \nคำตอบ: Pudge มี facet หลักคือ Fresh Meat ที่ทำให้ Flesh Heap เพิ่ม strength มากขึ้นเมื่อฆ่าศัตรู และ Grisly Trail ที่ทำให้ Rot ทิ้งร่องรอยความเสียหายต่อเนื่อง Fresh Meat เหมาะกับสายแทงค์ที่เข้าไปปะทะตรง ๆ ส่วน Grisly Trail เหมาะสำหรับการคุมพื้นที่และไล่ล่าศัตรู\n\nการตรวจสอบก่อนตอบ:\n1. ข้อมูลถูกต้องและมาจากเครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ที่เชื่อมกับฐานข้อมูล เช่น vector store\n2. ใช้ภาษาง่าย เข้าใจง่าย\n3. ครอบคลุมมุมมองการใช้งานในเกมจริง\n4. ไม่ใช้ JSON หรือโครงสร้างข้อมูลอื่น\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        -280
+      ],
+      "id": "363c8901-ff5e-425c-b0b7-a77638972e2d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "75b0e17a-09f2-4a0d-ba68-24666b7b22de",
+              "name": "chatInput",
+              "value": "={{ $('Webhook (Voice)').item.json.body.text }}",
+              "type": "string"
+            },
+            {
+              "id": "669f3414-4f97-4a2d-8886-fb2c28e9f902",
+              "name": "sessionId",
+              "value": "={{ $json.body.session_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -560,
+        -280
+      ],
+      "id": "1f7a9009-c8fe-4457-a13b-77210cef2541",
+      "name": "Edit Fields (Voice)"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dd446900-af8a-4726-abc6-033a0db60b10",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -780,
+        -280
+      ],
+      "id": "6a2f0817-ead7-45af-a66b-c3a46623932f",
+      "name": "Webhook (Voice)",
+      "webhookId": "dd446900-af8a-4726-abc6-033a0db60b10"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n      \"reply\": \"{{ $json.reply }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        600,
+        -280
+      ],
+      "id": "9cd7da07-c9c5-470d-a519-19254b26c271",
+      "name": "Respond to Webhook (Voice)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.output || \"\";  // หรือใช้ชื่อ field ที่ได้จาก AI\n\n// ทำความสะอาดข้อความสำหรับ gTTS\nconst cleaned = raw\n  // แทนที่ขึ้นบรรทัดใหม่หลายบรรทัดด้วยช่องว่าง\n  .replace(/\\n{2,}/g, ' ')\n  // แทนที่ขึ้นบรรทัดใหม่เดี่ยวด้วยช่องว่าง\n  .replace(/\\n/g, ' ')\n  // ลบเครื่องหมายคำพูดคู่ออก\n  .replace(/\"/g, '')\n  // ลบเครื่องหมายคำพูดเดี่ยวออก (ถ้ามี)\n  .replace(/'/g, '')\n  // ลบ backticks ออก (ถ้ามี)\n  .replace(/`/g, '')\n  // ลบอักขระพิเศษที่อาจทำให้ gTTS อ่านผิด\n  .replace(/[\\*\\#\\[\\]]/g, '')\n  // แทนที่ช่องว่างหลายช่องด้วยช่องว่างเดียว\n  .replace(/\\s+/g, ' ')\n  // ลบช่องว่างที่ขึ้นต้นและจบ\n  .trim();\n\n// ตรวจสอบความยาวข้อความ (gTTS มีขีดจำกัด)\nconst maxLength = 5000; // ปรับตามต้องการ\nconst finalText = cleaned.length > maxLength \n  ? cleaned.substring(0, maxLength) + '...' \n  : cleaned;\n\n// ตรวจสอบว่าข้อความว่างหรือไม่\nconst safeText = finalText || \"ขออภัย ไม่สามารถประมวลผลคำตอบได้\";\n\nreturn [\n  {\n    json: {\n      reply: safeText\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        -280
+      ],
+      "id": "f2ee7040-9ddd-4125-9777-79513e953e27",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model (Retrieve )": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store (Retrieve )": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store (Retrieve )",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields (Voice)": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook (Voice)": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields (Voice)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook (Voice)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bdfb5a90-c2e1-4221-b954-a9ce9b691bf3",
+  "meta": {
+    "instanceId": "5b31857f7d08120faafcdd926d671fca000c72140c4dcb1e24d490c2488973b8"
+  },
+  "id": "txJk2FrsFWoe91bG",
+  "tags": []
+}
