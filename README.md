@@ -94,7 +94,7 @@ This workflow adds a conversational AI system that connects to a LINE Messaging 
 #### Use Cases
 
 - Document-based Q&A
-- Helpdesk chatbot
+- Scraper chatbot
 - Internal knowledge assistant via LINE
 
 ---
@@ -185,7 +185,7 @@ Workflow นี้ให้คุณสร้างระบบ AI ตอบค�
 #### ตัวอย่างการใช้งาน
 
 - Chatbot ตอบคำถามจากเอกสาร
-- ระบบช่วยตอบคำถามอัตโนมัติภายในองค์กร
+- ระบบช่วยตอบคำถามอัตโนมัติจากการ Scraper
 - LINE assistant chatbot
 
 ---
