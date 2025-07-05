@@ -4,7 +4,7 @@
 
 ## Bonus Example n8n Workflow: Web Content Processing with AI AND Create Chat Bot From Scraper
 
-[English](#english) | [ไทย](#thai)
+[English](#english) | [ไทย](#ไทย)
 
 ---
 
