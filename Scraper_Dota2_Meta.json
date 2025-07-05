@@ -1,0 +1,1775 @@
+{
+  "name": "Scraper Dota2 Meta",
+  "nodes": [
+    {
+      "parameters": {
+        "html": "={{ $json.div }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        940
+      ],
+      "id": "aee9baa6-793e-4e26-8722-5873558e0fc0",
+      "name": "HTML TO MARK Pos 1"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.div }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        1490
+      ],
+      "id": "c5993f96-c3f4-4d21-a554-c715928de21b",
+      "name": "HTML TO MARK Pos 2"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.div }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        2040
+      ],
+      "id": "490d4f27-9a1f-4891-9bcb-9f2ca17d4351",
+      "name": "HTML TO MARK Pos 3"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.div }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        2590
+      ],
+      "id": "68f54af9-9f3c-4acd-a1c5-60e9269541ef",
+      "name": "HTML TO MARK Pos 4"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.div }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        3140
+      ],
+      "id": "50e00420-42fc-4e46-bd27-f51b613a96a5",
+      "name": "HTML TO MARK Pos 5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== วิธีที่ 3: หา div แบบ nested-safe =====\nfunction findDivAfterH2(html) {\n  // หา position ของ h2\n  const h2Pattern = /<h2[^>]*>Top Heroes<\\/h2>/;\n  const h2Match = html.match(h2Pattern);\n  \n  if (!h2Match) return null;\n  \n  // เริ่มหาจากตำแหน่งหลัง h2\n  let startIndex = h2Match.index + h2Match[0].length;\n  \n  // ข้าม whitespace\n  while (startIndex < html.length && /\\s/.test(html[startIndex])) {\n    startIndex++;\n  }\n  \n  // ตรวจสอบว่าตำแหน่งถัดไปเป็น <div หรือไม่\n  if (!html.substring(startIndex).startsWith('<div')) {\n    return null;\n  }\n  \n  // หา closing tag ของ div ที่ match\n  let divCount = 0;\n  let currentIndex = startIndex;\n  let divEnd = -1;\n  \n  while (currentIndex < html.length) {\n    if (html.substring(currentIndex, currentIndex + 4) === '<div') {\n      divCount++;\n      // ข้ามไปหลัง >\n      while (currentIndex < html.length && html[currentIndex] !== '>') {\n        currentIndex++;\n      }\n      currentIndex++;\n    } else if (html.substring(currentIndex, currentIndex + 6) === '</div>') {\n      divCount--;\n      if (divCount === 0) {\n        divEnd = currentIndex + 6;\n        break;\n      }\n      currentIndex += 6;\n    } else {\n      currentIndex++;\n    }\n  }\n  \n  if (divEnd === -1) return null;\n  \n  return html.substring(startIndex, divEnd);\n}\n\nconst inputData = $input.first().json.data;\n\nif (!inputData || inputData.html === null || inputData.html === undefined) {\n  return [{\n    json: {\n      success: false,\n      reason: \"html is null or data is null\"\n    }\n  }];\n}\n\nconst htmlString3 = $input.first().json.data.html;\nconst extractedDiv = findDivAfterH2(htmlString3);\n\nif (extractedDiv) {\n  return [{\n    json: {\n      div: extractedDiv,\n      posion: 'Carry',\n      ref: $input.first().json.data.url,\n      success: true\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1560,
+        840
+      ],
+      "id": "7150dd33-7344-4efa-a071-52d48c24353b",
+      "name": "Find Importance part Pos 1",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:7890/scrape",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://dota2protracker.com/meta?mmr=7000&position=pos%2B1&period=8"
+            },
+            {
+              "name": "method",
+              "value": "auto"
+            },
+            {
+              "name": "include_html",
+              "value": "true"
+            },
+            {
+              "name": "include_links",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1780,
+        1040
+      ],
+      "id": "aca92b2c-9a5b-49ee-911d-e5bb0d44a8da",
+      "name": "Pos 1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== วิธีที่ 3: หา div แบบ nested-safe =====\nfunction findDivAfterH2(html) {\n  // หา position ของ h2\n  const h2Pattern = /<h2[^>]*>Top Heroes<\\/h2>/;\n  const h2Match = html.match(h2Pattern);\n  \n  if (!h2Match) return null;\n  \n  // เริ่มหาจากตำแหน่งหลัง h2\n  let startIndex = h2Match.index + h2Match[0].length;\n  \n  // ข้าม whitespace\n  while (startIndex < html.length && /\\s/.test(html[startIndex])) {\n    startIndex++;\n  }\n  \n  // ตรวจสอบว่าตำแหน่งถัดไปเป็น <div หรือไม่\n  if (!html.substring(startIndex).startsWith('<div')) {\n    return null;\n  }\n  \n  // หา closing tag ของ div ที่ match\n  let divCount = 0;\n  let currentIndex = startIndex;\n  let divEnd = -1;\n  \n  while (currentIndex < html.length) {\n    if (html.substring(currentIndex, currentIndex + 4) === '<div') {\n      divCount++;\n      // ข้ามไปหลัง >\n      while (currentIndex < html.length && html[currentIndex] !== '>') {\n        currentIndex++;\n      }\n      currentIndex++;\n    } else if (html.substring(currentIndex, currentIndex + 6) === '</div>') {\n      divCount--;\n      if (divCount === 0) {\n        divEnd = currentIndex + 6;\n        break;\n      }\n      currentIndex += 6;\n    } else {\n      currentIndex++;\n    }\n  }\n  \n  if (divEnd === -1) return null;\n  \n  return html.substring(startIndex, divEnd);\n}\n\nconst inputData = $input.first().json.data;\n\nif (!inputData || inputData.html === null || inputData.html === undefined) {\n  return [{\n    json: {\n      success: false,\n      reason: \"html is null or data is null\"\n    }\n  }];\n}\n\nconst htmlString3 = $input.first().json.data.html;\nconst extractedDiv = findDivAfterH2(htmlString3);\n\nif (extractedDiv) {\n  return [{\n    json: {\n      div: extractedDiv,\n      posion: 'Midlane',\n      ref: $input.first().json.data.url,\n      success: true\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1560,
+        1390
+      ],
+      "id": "1dc2027f-84b1-4c2b-a4e5-8f9c1c71abf5",
+      "name": "Find Importance part Pos 2",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:7890/scrape",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://dota2protracker.com/meta?mmr=7000&position=pos%2B2&period=8"
+            },
+            {
+              "name": "method",
+              "value": "auto"
+            },
+            {
+              "name": "include_html",
+              "value": "true"
+            },
+            {
+              "name": "include_links",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1780,
+        1590
+      ],
+      "id": "526931db-7100-4575-9cf6-db269d12efa5",
+      "name": "Pos 2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:7890/scrape",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://dota2protracker.com/meta?mmr=7000&position=pos%2B3&period=8"
+            },
+            {
+              "name": "method",
+              "value": "auto"
+            },
+            {
+              "name": "include_html",
+              "value": "true"
+            },
+            {
+              "name": "include_links",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1780,
+        2140
+      ],
+      "id": "fa6481d7-1315-4b74-a83f-dc4231069ad6",
+      "name": "Pos 3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== วิธีที่ 3: หา div แบบ nested-safe =====\nfunction findDivAfterH2(html) {\n  // หา position ของ h2\n  const h2Pattern = /<h2[^>]*>Top Heroes<\\/h2>/;\n  const h2Match = html.match(h2Pattern);\n  \n  if (!h2Match) return null;\n  \n  // เริ่มหาจากตำแหน่งหลัง h2\n  let startIndex = h2Match.index + h2Match[0].length;\n  \n  // ข้าม whitespace\n  while (startIndex < html.length && /\\s/.test(html[startIndex])) {\n    startIndex++;\n  }\n  \n  // ตรวจสอบว่าตำแหน่งถัดไปเป็น <div หรือไม่\n  if (!html.substring(startIndex).startsWith('<div')) {\n    return null;\n  }\n  \n  // หา closing tag ของ div ที่ match\n  let divCount = 0;\n  let currentIndex = startIndex;\n  let divEnd = -1;\n  \n  while (currentIndex < html.length) {\n    if (html.substring(currentIndex, currentIndex + 4) === '<div') {\n      divCount++;\n      // ข้ามไปหลัง >\n      while (currentIndex < html.length && html[currentIndex] !== '>') {\n        currentIndex++;\n      }\n      currentIndex++;\n    } else if (html.substring(currentIndex, currentIndex + 6) === '</div>') {\n      divCount--;\n      if (divCount === 0) {\n        divEnd = currentIndex + 6;\n        break;\n      }\n      currentIndex += 6;\n    } else {\n      currentIndex++;\n    }\n  }\n  \n  if (divEnd === -1) return null;\n  \n  return html.substring(startIndex, divEnd);\n}\n\nconst inputData = $input.first().json.data;\n\nif (!inputData || inputData.html === null || inputData.html === undefined) {\n  return [{\n    json: {\n      success: false,\n      reason: \"html is null or data is null\"\n    }\n  }];\n}\n\nconst htmlString3 = $input.first().json.data.html;\nconst extractedDiv = findDivAfterH2(htmlString3);\n\nif (extractedDiv) {\n  return [{\n    json: {\n      div: extractedDiv,\n      posion: 'Offlane',\n      ref: $input.first().json.data.url,\n      success: true\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1560,
+        1940
+      ],
+      "id": "2c368e97-e93a-4a31-8401-256e8e9c0041",
+      "name": "Find Importance part Pos 3",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:7890/scrape",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://dota2protracker.com/meta?mmr=7000&position=pos%2B4&period=8"
+            },
+            {
+              "name": "method",
+              "value": "auto"
+            },
+            {
+              "name": "include_html",
+              "value": "true"
+            },
+            {
+              "name": "include_links",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1780,
+        2690
+      ],
+      "id": "9241814e-5886-4ee1-853d-2ef3f7989eec",
+      "name": "Pos 4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== วิธีที่ 3: หา div แบบ nested-safe =====\nfunction findDivAfterH2(html) {\n  // หา position ของ h2\n  const h2Pattern = /<h2[^>]*>Top Heroes<\\/h2>/;\n  const h2Match = html.match(h2Pattern);\n  \n  if (!h2Match) return null;\n  \n  // เริ่มหาจากตำแหน่งหลัง h2\n  let startIndex = h2Match.index + h2Match[0].length;\n  \n  // ข้าม whitespace\n  while (startIndex < html.length && /\\s/.test(html[startIndex])) {\n    startIndex++;\n  }\n  \n  // ตรวจสอบว่าตำแหน่งถัดไปเป็น <div หรือไม่\n  if (!html.substring(startIndex).startsWith('<div')) {\n    return null;\n  }\n  \n  // หา closing tag ของ div ที่ match\n  let divCount = 0;\n  let currentIndex = startIndex;\n  let divEnd = -1;\n  \n  while (currentIndex < html.length) {\n    if (html.substring(currentIndex, currentIndex + 4) === '<div') {\n      divCount++;\n      // ข้ามไปหลัง >\n      while (currentIndex < html.length && html[currentIndex] !== '>') {\n        currentIndex++;\n      }\n      currentIndex++;\n    } else if (html.substring(currentIndex, currentIndex + 6) === '</div>') {\n      divCount--;\n      if (divCount === 0) {\n        divEnd = currentIndex + 6;\n        break;\n      }\n      currentIndex += 6;\n    } else {\n      currentIndex++;\n    }\n  }\n  \n  if (divEnd === -1) return null;\n  \n  return html.substring(startIndex, divEnd);\n}\n\nconst inputData = $input.first().json.data;\n\nif (!inputData || inputData.html === null || inputData.html === undefined) {\n  return [{\n    json: {\n      success: false,\n      reason: \"html is null or data is null\"\n    }\n  }];\n}\n\nconst htmlString3 = $input.first().json.data.html;\nconst extractedDiv = findDivAfterH2(htmlString3);\n\nif (extractedDiv) {\n  return [{\n    json: {\n      div: extractedDiv,\n      posion: 'Support',\n      ref: $input.first().json.data.url,\n      success: true\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1560,
+        2490
+      ],
+      "id": "93f2f166-f120-4209-81f8-aa062856ec79",
+      "name": "Find Importance part Pos 4",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:7890/scrape",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://dota2protracker.com/meta?mmr=7000&position=pos%2B5&period=8"
+            },
+            {
+              "name": "method",
+              "value": "auto"
+            },
+            {
+              "name": "include_html",
+              "value": "true"
+            },
+            {
+              "name": "include_links",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1780,
+        3240
+      ],
+      "id": "f5d372a4-f1cd-403f-a22d-c577160b802e",
+      "name": "Pos 5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== วิธีที่ 3: หา div แบบ nested-safe =====\nfunction findDivAfterH2(html) {\n  // หา position ของ h2\n  const h2Pattern = /<h2[^>]*>Top Heroes<\\/h2>/;\n  const h2Match = html.match(h2Pattern);\n  \n  if (!h2Match) return null;\n  \n  // เริ่มหาจากตำแหน่งหลัง h2\n  let startIndex = h2Match.index + h2Match[0].length;\n  \n  // ข้าม whitespace\n  while (startIndex < html.length && /\\s/.test(html[startIndex])) {\n    startIndex++;\n  }\n  \n  // ตรวจสอบว่าตำแหน่งถัดไปเป็น <div หรือไม่\n  if (!html.substring(startIndex).startsWith('<div')) {\n    return null;\n  }\n  \n  // หา closing tag ของ div ที่ match\n  let divCount = 0;\n  let currentIndex = startIndex;\n  let divEnd = -1;\n  \n  while (currentIndex < html.length) {\n    if (html.substring(currentIndex, currentIndex + 4) === '<div') {\n      divCount++;\n      // ข้ามไปหลัง >\n      while (currentIndex < html.length && html[currentIndex] !== '>') {\n        currentIndex++;\n      }\n      currentIndex++;\n    } else if (html.substring(currentIndex, currentIndex + 6) === '</div>') {\n      divCount--;\n      if (divCount === 0) {\n        divEnd = currentIndex + 6;\n        break;\n      }\n      currentIndex += 6;\n    } else {\n      currentIndex++;\n    }\n  }\n  \n  if (divEnd === -1) return null;\n  \n  return html.substring(startIndex, divEnd);\n}\n\nconst inputData = $input.first().json.data;\n\nif (!inputData || inputData.html === null || inputData.html === undefined) {\n  return [{\n    json: {\n      success: false,\n      reason: \"html is null or data is null\"\n    }\n  }];\n}\n\nconst htmlString3 = $input.first().json.data.html;\nconst extractedDiv = findDivAfterH2(htmlString3);\n\nif (extractedDiv) {\n  return [{\n    json: {\n      div: extractedDiv,\n      posion: 'Hard Support',\n      ref: $input.first().json.data.url,\n      success: true\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1560,
+        3040
+      ],
+      "id": "688c65f2-a322-4e8c-8b1b-42ccfea1e15c",
+      "name": "Find Importance part Pos 5",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -900,
+        1975
+      ],
+      "id": "871e7e33-69c5-4a86-a3d5-e1ca3f4e7fbe",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2d5f5488-fb97-4f27-947f-1df1ecbae697",
+              "name": "data",
+              "value": "=**{{ $json.posion }}** \\n\\n{{ $json.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -680,
+        2015
+      ],
+      "id": "461c467d-c365-4699-b59d-2b748c45a918",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst merged = items.map(item => item.json.data).join('\\n\\n\\n');\n\nreturn [\n  {\n    json: {\n      finaldata: merged\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        2015
+      ],
+      "id": "7dc84cba-4a79-44f6-8990-abef022b2462",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a Dota 2 Meta Data Extractor that MUST respond with valid JSON only.\n\nCRITICAL REQUIREMENTS:\n1. Extract hero data by position from the provided text\n2. Return ONLY valid JSON - no markdown, no explanations, no extra text whatsoever\n3. Response must start with { and end with } - absolutely nothing else\n\nEXACT JSON SCHEMA (mandatory):\n{\n  \"carry\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}],\n  \"midlane\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}],\n  \"offlane\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}],\n  \"support\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}],\n  \"hard_support\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}]\n}\n\nDATA TYPE VALIDATION:\n- hero: string (must be in quotes)\n- matches: integer (no quotes, no decimals)\n- winrate: number (no quotes, decimals allowed)\n- contest_rate: number (no quotes, decimals allowed)\n- rating: integer (no quotes, no decimals)\n- facet: string (must be in quotes)\n- effect: string (must be in quotes)\n\nMANDATORY VALIDATION BEFORE RESPONDING:\n1. JSON starts with { and ends with }\n2. All 5 position keys present: carry, midlane, offlane, support, hard_support\n3. Each position contains an array (use [] if no data)\n4. Each hero object has exactly 7 fields with correct data types\n5. All brackets and braces properly closed\n6. No trailing commas\n7. No markdown code blocks\n8. No text outside JSON structure\n\nCORRECT EXAMPLE:\n{\"carry\":[{\"hero\":\"Medusa\",\"matches\":1035,\"winrate\":56.6,\"contest_rate\":27.4,\"rating\":3262,\"facet\":\"Venomous Volley\",\"effect\":\"Every 6 attacks, Medusa applies poison\"}],\"midlane\":[],\"offlane\":[],\"support\":[],\"hard_support\":[]}\n\nFORBIDDEN FORMATS:\n- ```json ... ```\n- Any text before or after JSON\n- Incomplete JSON\n- Invalid data types\n- Missing required fields\n\nRESPONSE RULE: Return only the JSON object. If you include anything else, you have failed."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        0,
+        2015
+      ],
+      "id": "2f89ba09-d81e-4973-919f-707b186caed1",
+      "name": "AI Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        2235
+      ],
+      "id": "0fbda3e7-f929-456f-b4a4-bd2c7c1e5cbf",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xNJED3juwaq1BWM8",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        1740
+      ],
+      "id": "f8dce191-2448-4f82-ad58-617a28e36cea",
+      "name": "Discord",
+      "webhookId": "b6972927-5962-40cd-a460-4de1a67af9df",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "ysSfgfyEKTbWimf1",
+          "name": "Discord Webhook account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2000,
+        2290
+      ],
+      "id": "3610c788-4bc6-4c5c-9e81-6feb1ba3d681",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        900,
+        1840
+      ],
+      "id": "c28a2c53-7f99-4995-9f28-3ee01c0dca09",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        1940
+      ],
+      "id": "b5042c2b-ccb8-4389-b8d1-7714ea9222c6"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"carry\": [\n    {\n      \"hero\": \"Medusa\",\n      \"matches\": 1035,\n      \"winrate\": 56.6,\n      \"contest_rate\": 27.4,\n      \"rating\": 3262,\n      \"facet\": \"Venomous Volley\",\n      \"effect\": \"Every 6 attacks, Medusa applies poison to her arrow that briefly reduces movement speed and attack speed.\"\n    }\n  ],\n  \"midlane\": [],\n  \"offlane\": [],\n  \"support\": [],\n  \"hard_support\": []\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        100,
+        2237.5
+      ],
+      "id": "5177477d-af51-417c-82ad-8655cac3e7af",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ดึง JSON object จริง ๆ จาก input (ตรวจสอบ path ให้ถูกต้อง)\n// ดึง JSON object จริง ๆ จาก input\nconst inputData = $input.all()[0].json;\n\nlet dataObj;\nlet data;\ntry {\n    // ตรวจสอบรูปแบบข้อมูลที่เข้ามา\n  if (inputData.text && inputData.text.output && inputData.text.output.parameters) {\n    // รูปแบบที่ 1: ซับซ้อน มี wrapper\n    data = inputData.text.output.parameters.output;\n  } else if (inputData.output) {\n     // รูปแบบที่ 2: ข้อมูล JSON ซับซ้อน มี output\n    data = inputData.output;\n  } else {\n    // รูปแบบที่ 2: ข้อมูล JSON โดยตรง\n    data = inputData;\n  }\n\n  // ตรวจสอบว่า data เป็น string หรือ object\n  if (typeof data === 'string') {\n    // ถ้าเป็น string ให้ parse\n    dataObj = JSON.parse(data);\n  } else if (typeof data === 'object' && data !== null) {\n    // ถ้าเป็น object แล้วให้ใช้เลย\n    dataObj = data;\n  } else {\n    throw new Error(\"Data is neither valid JSON string nor object\");\n  }\n\n  // ตรวจสอบว่ามี key ที่คาดหวัง\n  if (!dataObj.carry && !dataObj.midlane && !dataObj.offlane && !dataObj.support && !dataObj.hard_support) {\n    throw new Error(\"Invalid data structure: missing position keys\");\n  }\n} catch (error) {\n  // ส่ง status failed เพื่อไปเข้าทาง IF Node\n  return [{\n    json: {\n      status: \"failed\",\n      errorMessage: \"Error parsing JSON: \" + error.message,\n      originalString: $('Markdown to Plain Text').first().json.text,\n      formatWrong: data,\n    }\n  }];\n}\n\n// ====== ผ่าน JSON.parse แล้ว ทำต่อได้ ======\n\nfunction colorText(text, colorCode) {\n  // ANSI color codes: \n  // 37 = white, 36 = cyan(ฟ้า), 32 = green\n  return `\\u001b[${colorCode}m${text}\\u001b[0m`;\n}\n\nconst positionEmojis = {\n  carry: '🏹',\n  midlane: '⚔️',\n  offlane: '🛡️',\n  support: '💉',\n  hard_support: '💉'\n};\n\n// ฟังก์ชันลบฮีโร่ที่ชื่อซ้ำใน array เดียวกัน โดยเก็บตัวแรกไว้\nfunction deduplicateHeroes(heroes) {\n  const seen = new Set();\n  return heroes.filter(hero => {\n    if (seen.has(hero.hero)) return false;\n    seen.add(hero.hero);\n    return true;\n  });\n}\n\n// ฟังก์ชันทำความสะอาดข้อมูล facet และ effect\nfunction cleanHeroData(heroes) {\n  return heroes.map(hero => {\n    let cleanedHero = { ...hero };\n    \n    // แยก facet และ effect ที่อาจปนกัน\n    if (cleanedHero.facet && cleanedHero.effect) {\n      // ถ้า effect มีแค่ชื่อ hero หรือคำสั้นๆ ให้ลบออก\n      if (cleanedHero.effect.split(' ').length <= 2) {\n        cleanedHero.effect = '';\n      }\n    }\n    \n    // ถ้า facet ยาวเกินไป อาจจะมีทั้ง facet และ effect รวมกัน\n    if (cleanedHero.facet && cleanedHero.facet.length > 200) {\n      // แยกโดยหา pattern ที่เป็น effect\n      const parts = cleanedHero.facet.split(/\\.\\s*(?=[A-Z])/);\n      if (parts.length > 1) {\n        cleanedHero.facet = parts[0] + '.';\n        if (!cleanedHero.effect || cleanedHero.effect.trim() === '') {\n          cleanedHero.effect = parts.slice(1).join('. ');\n        }\n      }\n    }\n    \n    return cleanedHero;\n  });\n}\n\n// ลบฮีโร่ซ้ำและทำความสะอาดข้อมูลในแต่ละตำแหน่ง\n['carry', 'midlane', 'offlane', 'support', 'hard_support'].forEach(pos => {\n  if (dataObj[pos] && Array.isArray(dataObj[pos])) {\n    dataObj[pos] = cleanHeroData(dataObj[pos]);\n    dataObj[pos] = deduplicateHeroes(dataObj[pos]);\n  }\n});\n\n// ฟังก์ชันแปลงข้อมูล hero list เป็น Markdown ตามตำแหน่ง\nfunction formatPosition(positionName, heroes) {\n  const key = positionName.toLowerCase().replace(/ /g, '_');\n  const emoji = positionEmojis[key] || '';\n  \n  if (!heroes || heroes.length === 0) return `${emoji} **${positionName}**\\n\\nNo data available.\\n\\n`;\n  let md = `\\n${emoji} **${positionName}**\\n\\n`;\n  heroes.forEach((h, i) => {\n    // ใส่ emoji สีแทน\n    const matchesColored = `▫️ ${h.matches}`;\n    const winrateColored = `⚡ ${h.winrate.toFixed(1)}%`;\n    const contestColored = `🔹 ${h.contest_rate.toFixed(1)}%`;\n    const ratingColored = `🔹 ${h.rating}`;\n\n    // กำหนด emoji สำหรับอันดับ\n    let rankEmoji;\n    if (i === 0) rankEmoji = '🥇';\n    else if (i === 1) rankEmoji = '🥈';\n    else if (i === 2) rankEmoji = '🥉';\n    else rankEmoji = '🎗';\n\n    const prefix = `${rankEmoji} ${i + 1}. `;\n    const indent = ' '.repeat(prefix.length); // ทำให้ Facet กับ Effect เยื้องเท่ากัน\n\n    md += `${prefix}${h.hero} - ${matchesColored} matches | ${winrateColored} winrate | ${contestColored} contest | ${ratingColored} rating\\n`;\n    \n    // แสดง Facet\n    if (h.facet && h.facet.trim()) {\n      md += `${indent}Facet: ${h.facet.trim()}\\n`;\n    }\n    \n    // แสดง Effect (ถ้ามี)\n    if (h.effect && h.effect.trim()) {\n      md += `${indent}Effect: ${h.effect.trim()}\\n\\n`;\n    } else {\n      md += '\\n';\n    }\n  });\n  return md;\n}\n\n// สร้างข้อความ Markdown ทั้งหมดรวมทุกตำแหน่ง\nlet fullText = '';\nfullText += formatPosition('Carry', dataObj.carry);\nfullText += formatPosition('Midlane', dataObj.midlane);\nfullText += formatPosition('Offlane', dataObj.offlane);\nfullText += formatPosition('Support', dataObj.support);\nfullText += formatPosition('Hard Support', dataObj.hard_support);\n\n// ต่อท้าย Reference Links\nfullText += `\\n\\n📊 Data Source\\n\\n`;\nfullText += `🔋 MMR Range 7000+\\n\\n`;\nfullText += `🔗 Reference Links\\n`;\nfullText += `- [Carry Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B1&period=8)\\n`;\nfullText += `- [Midlane Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B2&period=8)\\n`;\nfullText += `- [Offlane Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B3&period=8)\\n`;\nfullText += `- [Support Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B4&period=8)\\n`;\nfullText += `- [Hard Support Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B5&period=8)\\n`;\n\n// ฟังก์ชันสำหรับตัดข้อความไม่เกิน 2000 ตัวอักษร (Discord limit)\nfunction splitMessage(text, maxLength = 2000) {\n  const parts = [];\n  let current = 0;\n  while (current < text.length) {\n    let sliceEnd = current + maxLength;\n    if (sliceEnd < text.length) {\n      const lastNewline = text.lastIndexOf('\\n', sliceEnd);\n      if (lastNewline > current) sliceEnd = lastNewline + 1;\n    }\n    parts.push(text.slice(current, sliceEnd));\n    current = sliceEnd;\n  }\n  return parts;\n}\n\nconst messages = splitMessage(fullText);\n\n// ใส่ status: \"success\" สำหรับให้ IF Node รู้ว่า ผ่าน\nreturn messages.map(msg => ({\n  json: {\n    status: \"success\",\n     message: msg,\n     full_message: fullText,\n     dataObj: dataObj\n    // message: \"```ansi\" + msg + \"```\"\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        2015
+      ],
+      "id": "84571aaa-fa3d-48b2-99d2-74d3d46e92e5",
+      "name": "Rearrange the message Version 2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// รับข้อความ markdown ใน input JSON field \"markdown\"\nconst md = $input.first().json.finaldata;\n\n// ลบ image syntax ![](...)\nconst cleaned = md.replace(/!\\[.*?\\]\\(.*?\\)/g, '')\n  // ลบลิงก์ [text](url) เหลือแต่ text\n  .replace(/\\[(.*?)\\]\\(.*?\\)/g, '$1')\n  // ลบตัวอักษรพิเศษหรือ newline ที่ไม่จำเป็น (ปรับตามต้องการ)\n  .replace(/\\n{2,}/g, '\\n')\n  .trim();\n\nreturn [{ json: { text: cleaned, status: \"success\" } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        2015
+      ],
+      "id": "3f905192-b584-4b5d-91be-ac8e0f68a4d3",
+      "name": "Markdown to Plain Text"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ec4cb127-ac66-4cfb-9155-25a709ad6b72",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        680,
+        2015
+      ],
+      "id": "b60d11eb-d276-431a-810e-a61826f89178",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "66c6973c-d628-4846-ac5c-0c2ded0dd470",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1340,
+        3140
+      ],
+      "id": "edada3c0-45bb-4215-85ed-2fd1295e6f01",
+      "name": "If Pos 5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "66c6973c-d628-4846-ac5c-0c2ded0dd470",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1340,
+        2590
+      ],
+      "id": "fb2d9551-3f2d-46a4-8720-6516a426c1c3",
+      "name": "If Pos 4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "66c6973c-d628-4846-ac5c-0c2ded0dd470",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1340,
+        2040
+      ],
+      "id": "8a8d31c8-5dc9-40ac-b65a-02c898c55398",
+      "name": "If Pos 3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "66c6973c-d628-4846-ac5c-0c2ded0dd470",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1340,
+        1490
+      ],
+      "id": "5921b6cb-5c33-485e-8716-0aff12a25d7f",
+      "name": "If Pos 2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "66c6973c-d628-4846-ac5c-0c2ded0dd470",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1340,
+        940
+      ],
+      "id": "01fc8518-efe5-4091-8ba2-2640f8072b3c",
+      "name": "If Pos 1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        2140
+      ],
+      "id": "f06939a4-e340-4369-bfa0-0dfe15b00d9e",
+      "name": "Wait",
+      "webhookId": "3fbb560f-557f-4d31-9ab3-5fc5f7956134"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2df0e0db-724b-4e43-bcca-36e21b96f754",
+              "name": "text",
+              "value": "={{ $json.originalString }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        2140
+      ],
+      "id": "df30b976-aa66-40fa-b971-e5c4da525b5b",
+      "name": "Edit Fields Return"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": "n8n_dota2_meta_vectors",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        1400,
+        1440
+      ],
+      "id": "a407438f-7e5f-4b5b-834b-85543c49b06e",
+      "name": "Postgres PGVector Store",
+      "credentials": {
+        "postgres": {
+          "id": "G7pHv96kiHDCnHyU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        1660
+      ],
+      "id": "b674462b-30a4-4c82-b084-8eb7992cee8c",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xNJED3juwaq1BWM8",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_dota2_meta_vectors",
+          "mode": "list",
+          "cachedResultName": "n8n_dota2_meta_vectors"
+        },
+        "restartSequences": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        900,
+        1540
+      ],
+      "id": "68dfe92a-dc70-407d-a19b-d908473b3eec",
+      "name": "Delete table or rows of n8n_dota2_meta_vectors",
+      "credentials": {
+        "postgres": {
+          "id": "G7pHv96kiHDCnHyU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\n// N8N Code Node - ลบ markdown wrapper จาก JSON\nconst inputData = $input.all()[0].json;\n\n// ดึงข้อมูลจาก field ที่มี JSON (ปรับ field name ตามจริง)\nlet jsonString = inputData.data || inputData.content || inputData.response || inputData.text || inputData.output;\n\n// ลบ markdown wrapper\nif (typeof jsonString === 'string') {\n  // ลบ ```json ที่ด้านบน\n  jsonString = jsonString.replace(/^```json\\s*\\n?/i, '');\n  \n  // ลบ ``` ที่ด้านล่าง\n  jsonString = jsonString.replace(/\\n?```\\s*$/i, '');\n  \n  // ลบ whitespace ที่ไม่จำเป็น\n  jsonString = jsonString.trim();\n} else {\n  jsonString = JSON.stringify(jsonString);\n}\n\n// แปลงเป็น JSON object\nlet cleanedJson;\ntry {\n  cleanedJson = JSON.parse(jsonString);\n} catch (error) {\n  throw new Error(`Invalid JSON: ${error.message}`);\n}\n\n// Return ผลลัพธ์\nreturn [{\n  json: {\n    output: cleanedJson,\n    originalLength: jsonString.length,\n    status: 'success'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1820,
+        2140
+      ],
+      "id": "660e91dc-37b2-474f-aefe-ec61afea4f6a",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ดึง JSON object จริง ๆ จาก input (ตรวจสอบ path ให้ถูกต้อง)\nconst data = JSON.stringify($input.first().json.output);\n\nlet dataObj;\ntry {\n  dataObj = JSON.parse(data);\n} catch (error) {\n  // ส่ง status failed เพื่อไปเข้าทาง IF Node\n  return [{\n    json: {\n      status: \"failed\",\n      errorMessage: \"Error parsing JSON: \" + error.message,\n      originalString: $('Markdown to Plain Text').first().json.text,\n      formatWrong: data,\n    }\n  }];\n}\n\n// ====== ผ่าน JSON.parse แล้ว ทำต่อได้ ======\n\nfunction colorText(text, colorCode) {\n  // ANSI color codes: \n  // 37 = white, 36 = cyan(ฟ้า), 32 = green\n  return `\\u001b[${colorCode}m${text}\\u001b[0m`;\n}\n\nconst positionEmojis = {\n  carry: '🏹',\n  midlane: '⚔️',\n  offlane: '🛡️',\n  support: '💉',\n  hard_support: '💉'\n};\n\n// ฟังก์ชันลบฮีโร่ที่ชื่อซ้ำใน array เดียวกัน โดยเก็บตัวแรกไว้\nfunction deduplicateHeroes(heroes) {\n  const seen = new Set();\n  return heroes.filter(hero => {\n    if (seen.has(hero.hero)) return false;\n    seen.add(hero.hero);\n    return true;\n  });\n}\n\n// ลบฮีโร่ซ้ำในแต่ละตำแหน่ง\n['carry', 'midlane', 'offlane', 'support', 'hard_support'].forEach(pos => {\n  dataObj[pos] = deduplicateHeroes(dataObj[pos]);\n});\n\n// ฟังก์ชันแปลงข้อมูล hero list เป็น Markdown ตามตำแหน่ง\nfunction formatPosition(positionName, heroes) {\n  const key = positionName.toLowerCase().replace(/ /g, '_');\n  const emoji = positionEmojis[key] || '';\n  \n  if (!heroes || heroes.length === 0) return `${emoji} **${positionName}**\\n\\nNo data available.\\n\\n`;\n  let md = `\\n${emoji} **${positionName}**\\n\\n`;\n  heroes.forEach((h, i) => {\n    // ใส่สีที่ต้องการ\n    // const ratingColored = colorText(h.rating.toString(), 36); // ฟ้า\n    // const contestColored = colorText(h.contest_rate.toFixed(1) + '%', 36); // ฟ้า\n    // const matchesColored = colorText(h.matches.toString(), 37); // ขาว\n    // const winrateColored = colorText(h.winrate.toFixed(1) + '%', 32); // เขียว\n\n    // ใส่ emoji สีแทน\n    const matchesColored = `▫️ ${h.matches}`;\n    const winrateColored = `⚡ ${h.winrate.toFixed(1)}%`;\n    const contestColored = `🔹 ${h.contest_rate.toFixed(1)}%`;\n    const ratingColored = `🔹 ${h.rating}`;\n\n    // กำหนด emoji สำหรับอันดับ\n    let rankEmoji;\n    if (i === 0) rankEmoji = '🥇';\n    else if (i === 1) rankEmoji = '🥈';\n    else if (i === 2) rankEmoji = '🥉';\n    else rankEmoji = '🎗';\n\n    const prefix = `${rankEmoji} ${i + 1}. `;\n    const indent = ' '.repeat(prefix.length); // ทำให้ Facet กับ Effect เยื้องเท่ากัน\n\n    // md += `${rankEmoji} ${i + 1}. ${h.hero} - ${matchesColored} matches | ${winrateColored} winrate | ${contestColored} contest | ${ratingColored} rating\\n`;\n    // md += `Facet: ${h.facet}\\n`;\n    // md += `Effect: ${h.effect}\\n\\n`;\n\n    md += `${prefix}${h.hero} - ${matchesColored} matches | ${winrateColored} winrate | ${contestColored} contest | ${ratingColored} rating\\n`;\n    md += `${indent}Facet: ${h.facet}\\n`;\n    md += `${indent}Effect: ${h.effect}\\n\\n`;\n  });\n  // return \"```ansi\\n\" + md + \"```\";\n  return md;\n}\n\n// สร้างข้อความ Markdown ทั้งหมดรวมทุกตำแหน่ง\nlet fullText = '';\nfullText += formatPosition('Carry', dataObj.carry);\nfullText += formatPosition('Midlane', dataObj.midlane);\nfullText += formatPosition('Offlane', dataObj.offlane);\nfullText += formatPosition('Support', dataObj.support);\nfullText += formatPosition('Hard Support', dataObj.hard_support);\n\n// ต่อท้าย Reference Links\nfullText += `\\n\\n📊 Data Source\\n\\n`;\nfullText += `🔋 MMR Range 7000+\\n\\n`;\nfullText += `🔗 Reference Links\\n`;\nfullText += `- [Carry Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B1&period=8)\\n`;\nfullText += `- [Midlane Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B2&period=8)\\n`;\nfullText += `- [Offlane Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B3&period=8)\\n`;\nfullText += `- [Support Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B4&period=8)\\n`;\nfullText += `- [Hard Support Meta](https://dota2protracker.com/meta?mmr=7000&position=pos%2B5&period=8)\\n`;\n\n// ฟังก์ชันสำหรับตัดข้อความไม่เกิน 2000 ตัวอักษร (Discord limit)\nfunction splitMessage(text, maxLength = 2000) {\n  const parts = [];\n  let current = 0;\n  while (current < text.length) {\n    let sliceEnd = current + maxLength;\n    if (sliceEnd < text.length) {\n      const lastNewline = text.lastIndexOf('\\n', sliceEnd);\n      if (lastNewline > current) sliceEnd = lastNewline + 1;\n    }\n    parts.push(text.slice(current, sliceEnd));\n    current = sliceEnd;\n  }\n  return parts;\n}\n\nconst messages = splitMessage(fullText);\n\n// ใส่ status: \"success\" สำหรับให้ IF Node รู้ว่า ผ่าน\nreturn messages.map(msg => ({\n  json: {\n    status: \"success\",\n     message: msg,\n     full_message: fullText,\n     dataObj: dataObj\n    // message: \"```ansi\" + msg + \"```\"\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2040,
+        2315
+      ],
+      "id": "e8482621-9279-4723-a764-ab38f2ff8371",
+      "name": "Rearrange the message Version "
+    },
+    {
+      "parameters": {
+        "jsCode": "// // รับข้อความ markdown ใน input JSON field \"markdown\"\nconst markdownInput = $('If').first().json.full_message;\n\n// function cleanMarkdownToPlainText(markdownText) {\n//     const cleaned = markdownText\n//         // ลบ image syntax ![alt text](image url)\n//         .replace(/!\\[.*?\\]\\(.*?\\)/g, '')\n//         // ลบลิงก์ [text](url) เหลือแต่ text\n//         .replace(/\\[(.*?)\\]\\(.*?\\)/g, '$1')\n//         // ลบ heading markdown (# ## ###)\n//         .replace(/^#{1,6}\\s+/gm, '')\n//         // ลบ bold/italic (**text** *text*)\n//         .replace(/\\*\\*(.*?)\\*\\*/g, '$1')\n//         .replace(/\\*(.*?)\\*/g, '$1')\n//         // ลบ code blocks (```code```)\n//         .replace(/```[\\s\\S]*?```/g, '')\n//         // ลบ inline code (`code`)\n//         .replace(/`([^`]+)`/g, '$1')\n//         // ลบ horizontal rules (---)\n//         .replace(/^-{3,}$/gm, '')\n//         // ลบ blockquotes (> text)\n//         .replace(/^>\\s+/gm, '')\n//         // ลบ list markers (- * +)\n//         .replace(/^[\\s]*[-*+]\\s+/gm, '')\n//         // ลบ numbered lists (1. 2. 3.)\n//         .replace(/^[\\s]*\\d+\\.\\s+/gm, '')\n//         // ลบ newlines ที่เกินไป\n//         .replace(/\\n{3,}/g, '\\n\\n')\n//         // ลบ emojis (basic cleanup)\n//         .replace(/[\\u{1F600}-\\u{1F64F}]|[\\u{1F300}-\\u{1F5FF}]|[\\u{1F680}-\\u{1F6FF}]|[\\u{1F1E0}-\\u{1F1FF}]|[\\u{2600}-\\u{26FF}]|[\\u{2700}-\\u{27BF}]/gu, '')\n//         // trim whitespace\n//         .trim();\n    \n//     return cleaned;\n// }\n\n// const plainText = cleanMarkdownToPlainText(markdownInput);\n\n// ลบ image syntax ![](...)\nconst cleaned = markdownInput.replace(/!\\[.*?\\]\\(.*?\\)/g, '')\n  // ลบลิงก์ [text](url) เหลือแต่ text\n  .replace(/\\[(.*?)\\]\\(.*?\\)/g, '$1')\n  // ลบตัวอักษรพิเศษหรือ newline ที่ไม่จำเป็น (ปรับตามต้องการ)\n  .replace(/\\n{2,}/g, '\\n')\n  .trim();\n\nreturn [{ json: { message: cleaned } }];\n// return [{ json: { message: $('If').first().json.full_message } }];\n// const inputData = $('If').first().json;\n\n// let dataObj;\n// let data;\n// try {\n//   data = inputData.dataObj\n//   // ตรวจสอบว่า data เป็น string หรือ object\n//   if (typeof data === 'string') {\n//     // ถ้าเป็น string ให้ parse\n//     dataObj = JSON.parse(data);\n//   } else if (typeof data === 'object' && data !== null) {\n//     // ถ้าเป็น object แล้วให้ใช้เลย\n//     dataObj = data;\n//   } else {\n//     throw new Error(\"Data is neither valid JSON string nor object\");\n//   }\n\n//   // ตรวจสอบว่ามี key ที่คาดหวัง\n//   if (!dataObj.carry && !dataObj.midlane && !dataObj.offlane && !dataObj.support && !dataObj.hard_support) {\n//     throw new Error(\"Invalid data structure: missing position keys\");\n//   }\n// } catch (error) {\n//   // ส่ง status failed เพื่อไปเข้าทาง IF Node\n//   return [{\n//     json: {\n//       status: \"failed\",\n//       errorMessage: \"Error parsing JSON: \" + error.message,\n//       originalString: $('Markdown to Plain Text').first().json.text,\n//       formatWrong: data,\n//     }\n//   }];\n// }\n\n// const input = dataObj;\n\n// const output = [];\n\n// for (const [role, heroes] of Object.entries(input)) {\n//   for (const hero of heroes) {\n//     const {\n//       hero: heroName,\n//       matches,\n//       winrate,\n//       contest_rate,\n//       rating,\n//       facet,\n//       effect\n//     } = hero;\n\n//     const rawText = `${heroName} is a ${role} hero with ${matches} matches, ${winrate}% winrate, ${contest_rate}% contest rate, and a rating of ${rating}. Facet: ${facet}` +\n//       (effect ? ` Effect: ${effect}` : '');\n\n//     output.push({\n//       json: {\n//         role,\n//         hero: heroName,\n//         matches,\n//         winrate,\n//         contest_rate,\n//         rating,\n//         facet,\n//         effect,\n//         raw_text: rawText\n//       }\n//     });\n//   }\n// }\n\n// return [{\n//   json: {\n//     status: \"success\",\n//     json_formate: output\n//   }\n// }];\n// return output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        1540
+      ],
+      "id": "ccc07bbe-0be4-4c0b-b68d-7b61b76133ac",
+      "name": "Code2",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/broadcast",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer DMS+Fowt8vxHxoSOhRla5UYdMsOz9S8oN3O8uo8ozkKQHw3geT9j3xtl48OVI8FCXBXqHirZv322NifBgIPUFtLUvK9t2Ny4xHMCzFiUKPD+7Afr80ykazXKEyEnWJx5NVW9fr/6ojJmN0LXZ4EsPQdB04t89/1O/w1cDnyilFU="
+            },
+            {
+              "name": "X-Line-Retry-Key",
+              "value": "={{ $json.uuid }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"messages\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"Database Update\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2040,
+        1540
+      ],
+      "id": "64b1843c-5f6f-4255-a105-86af78eb0d31",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate UUID in hexadecimal format for X-Line-Retry-Key\nfunction generateUUID() {\n    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {\n        const r = Math.random() * 16 | 0;\n        const v = c == 'x' ? r : (r & 0x3 | 0x8);\n        return v.toString(16);\n    });\n}\n\n// Example retry key\nconst retryKey = generateUUID();\nreturn [{ json: { uuid: retryKey } }]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1820,
+        1540
+      ],
+      "id": "589d6f32-7e53-4b65-a145-6fad9c928000",
+      "name": "Retry key"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1540,
+        1660
+      ],
+      "id": "2ab4d57b-fb7c-49d0-b537-bc8070672c4e",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        2360
+      ],
+      "id": "4cc2688a-b5e0-43d9-88e2-406e03126e86",
+      "name": "Ollama Chat Model (Again)",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xNJED3juwaq1BWM8",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"carry\": [\n    {\n      \"hero\": \"Medusa\",\n      \"matches\": 1035,\n      \"winrate\": 56.6,\n      \"contest_rate\": 27.4,\n      \"rating\": 3262,\n      \"facet\": \"Venomous Volley\",\n      \"effect\": \"Every 6 attacks, Medusa applies poison to her arrow that briefly reduces movement speed and attack speed.\"\n    }\n  ],\n  \"midlane\": [],\n  \"offlane\": [],\n  \"support\": [],\n  \"hard_support\": []\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1460,
+        2362.5
+      ],
+      "id": "b647c020-f361-4a18-96bf-71e2cbc6a82d",
+      "name": "Structured Output Parser (Again)"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a Dota 2 Meta Data Extractor that MUST respond with valid JSON only.\n\nCRITICAL REQUIREMENTS:\n1. Extract hero data by position from the provided text\n2. Return ONLY valid JSON - no markdown, no explanations, no extra text whatsoever\n3. Response must start with { and end with } - absolutely nothing else\n\nEXACT JSON SCHEMA (mandatory):\n{\n  \"carry\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}],\n  \"midlane\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}],\n  \"offlane\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}],\n  \"support\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}],\n  \"hard_support\": [{\"hero\": \"string\", \"matches\": number, \"winrate\": number, \"contest_rate\": number, \"rating\": number, \"facet\": \"string\", \"effect\": \"string\"}]\n}\n\nDATA TYPE VALIDATION:\n- hero: string (must be in quotes)\n- matches: integer (no quotes, no decimals)\n- winrate: number (no quotes, decimals allowed)\n- contest_rate: number (no quotes, decimals allowed)\n- rating: integer (no quotes, no decimals)\n- facet: string (must be in quotes)\n- effect: string (must be in quotes)\n\nMANDATORY VALIDATION BEFORE RESPONDING:\n1. JSON starts with { and ends with }\n2. All 5 position keys present: carry, midlane, offlane, support, hard_support\n3. Each position contains an array (use [] if no data)\n4. Each hero object has exactly 7 fields with correct data types\n5. All brackets and braces properly closed\n6. No trailing commas\n7. No markdown code blocks\n8. No text outside JSON structure\n\nCORRECT EXAMPLE:\n{\"carry\":[{\"hero\":\"Medusa\",\"matches\":1035,\"winrate\":56.6,\"contest_rate\":27.4,\"rating\":3262,\"facet\":\"Venomous Volley\",\"effect\":\"Every 6 attacks, Medusa applies poison\"}],\"midlane\":[],\"offlane\":[],\"support\":[],\"hard_support\":[]}\n\nFORBIDDEN FORMATS:\n- ```json ... ```\n- Any text before or after JSON\n- Incomplete JSON\n- Invalid data types\n- Missing required fields\n\nRESPONSE RULE: Return only the JSON object. If you include anything else, you have failed."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        2140
+      ],
+      "id": "1c1a171d-7be7-4e41-844d-1e0dd75e7f25",
+      "name": "AI Agent (Again)"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1340,
+        1140
+      ],
+      "id": "89d890f6-e909-4947-8cc1-db524303d802",
+      "name": "Wait Pos 1",
+      "webhookId": "059ae655-0d1c-458b-b5f8-b9263193c595"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1340,
+        1690
+      ],
+      "id": "94c0d426-7d02-4288-9040-e20a089653f9",
+      "name": "Wait Pos 2",
+      "webhookId": "f954a3a3-1887-4c63-81fb-cc3ca2954176"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1340,
+        2240
+      ],
+      "id": "47286e60-bb9c-46cc-8e1d-8ce7e719fa42",
+      "name": "Wait Pos 3",
+      "webhookId": "a1af02b7-384c-47b7-a702-388c1a77094c"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1340,
+        2790
+      ],
+      "id": "e8be482c-21cf-408d-a084-8aaedc66c237",
+      "name": "Wait Pos 4",
+      "webhookId": "97b83324-5969-43bf-bc72-d58d583f410a"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1340,
+        3340
+      ],
+      "id": "05bb2ec8-0d5e-4ca4-9fd2-fe08c88352b0",
+      "name": "Wait Pos 5",
+      "webhookId": "62586f0d-7873-438b-aede-ade9641cbd23"
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        180,
+        2435
+      ],
+      "id": "3d57b787-8020-4b33-84dd-e26a2fef6360",
+      "name": "Ollama Chat Model (Parser)",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xNJED3juwaq1BWM8",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        2560
+      ],
+      "id": "0c3a7bfe-2c71-4c08-8961-693ef0597d94",
+      "name": "Google Gemini Chat Model (Parser Again)",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "D1yAGVrFhpeq0HS2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTML TO MARK Pos 1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML TO MARK Pos 2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTML TO MARK Pos 3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "HTML TO MARK Pos 4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "HTML TO MARK Pos 5": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Find Importance part Pos 1": {
+      "main": [
+        [
+          {
+            "node": "If Pos 1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait Pos 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pos 1": {
+      "main": [
+        [
+          {
+            "node": "Find Importance part Pos 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Importance part Pos 2": {
+      "main": [
+        [
+          {
+            "node": "If Pos 2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait Pos 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pos 2": {
+      "main": [
+        [
+          {
+            "node": "Find Importance part Pos 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pos 3": {
+      "main": [
+        [
+          {
+            "node": "Find Importance part Pos 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Importance part Pos 3": {
+      "main": [
+        [
+          {
+            "node": "If Pos 3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait Pos 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pos 4": {
+      "main": [
+        [
+          {
+            "node": "Find Importance part Pos 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Importance part Pos 4": {
+      "main": [
+        [
+          {
+            "node": "If Pos 4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait Pos 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pos 5": {
+      "main": [
+        [
+          {
+            "node": "Find Importance part Pos 5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Importance part Pos 5": {
+      "main": [
+        [
+          {
+            "node": "If Pos 5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait Pos 5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Markdown to Plain Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Rearrange the message Version 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Pos 4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Pos 5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Pos 1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Pos 2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Pos 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rearrange the message Version 2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown to Plain Text": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Delete table or rows of n8n_dota2_meta_vectors",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord": {
+      "main": [
+        []
+      ]
+    },
+    "If Pos 5": {
+      "main": [
+        [
+          {
+            "node": "HTML TO MARK Pos 5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pos 5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Pos 4": {
+      "main": [
+        [
+          {
+            "node": "HTML TO MARK Pos 4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pos 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Pos 3": {
+      "main": [
+        [
+          {
+            "node": "HTML TO MARK Pos 3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pos 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Pos 2": {
+      "main": [
+        [
+          {
+            "node": "HTML TO MARK Pos 2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pos 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Pos 1": {
+      "main": [
+        [
+          {
+            "node": "HTML TO MARK Pos 1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pos 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields Return",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields Return": {
+      "main": [
+        [
+          {
+            "node": "AI Agent (Again)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete table or rows of n8n_dota2_meta_vectors": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store": {
+      "main": [
+        [
+          {
+            "node": "Retry key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Rearrange the message Version ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Rearrange the message Version ": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retry key": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model (Again)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent (Again)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser (Again)": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent (Again)",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent (Again)": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Pos 1": {
+      "main": [
+        [
+          {
+            "node": "Pos 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Pos 2": {
+      "main": [
+        [
+          {
+            "node": "Pos 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Pos 3": {
+      "main": [
+        [
+          {
+            "node": "Pos 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Pos 4": {
+      "main": [
+        [
+          {
+            "node": "Pos 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Pos 5": {
+      "main": [
+        [
+          {
+            "node": "Pos 5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model (Parser)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model (Parser Again)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser (Again)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d7a50778-b982-4b06-9c2a-f0d3e03adf74",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5b31857f7d08120faafcdd926d671fca000c72140c4dcb1e24d490c2488973b8"
+  },
+  "id": "4eACcPQiZys4Hu1U",
+  "tags": []
+}

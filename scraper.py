@@ -20,6 +20,11 @@ from datetime import datetime
 import threading
 from concurrent.futures import ThreadPoolExecutor
 import os
+from cachetools import TTLCache
+import aiohttp.client_exceptions
+import asyncio.exceptions
+from ratelimit import limits, sleep_and_retry
+from typing import Set
 
 # ตั้งค่า logging
 logging.basicConfig(level=logging.INFO)
@@ -82,11 +87,22 @@ class TaskStatusResponse(BaseModel):
     created_at: str
     completed_at: Optional[str] = None
 
+# เพิ่ม config
+CONCURRENT_SCRAPES = 5  # จำนวน concurrent scrapes
+RATE_LIMIT = 10  # จำนวนครั้งต่อวินาที
+CACHE_TTL = 3600  # cache timeout (วินาที)
+MAX_RETRIES = 3  # จำนวนครั้งที่จะ retry
+
+# เพิ่ม cache
+url_cache = TTLCache(maxsize=100, ttl=CACHE_TTL)
+processing_urls: Set[str] = set()
+
 class AsyncWebScraper:
     def __init__(self, headless=True, timeout=15):
         self.timeout = timeout
         self.headless = headless
         self.executor = ThreadPoolExecutor(max_workers=3)
+        self.semaphore = asyncio.Semaphore(CONCURRENT_SCRAPES)
         
     async def scrape_static_async(self, url: str, include_html=False, include_images=True, include_links=True):
         """Async static scraping"""
@@ -289,6 +305,41 @@ class AsyncWebScraper:
         js_data['method'] = 'javascript'
         return js_data
 
+    @sleep_and_retry
+    @limits(calls=RATE_LIMIT, period=1)
+    async def rate_limited_request(self, url: str, **kwargs):
+        """Rate-limited request wrapper"""
+        if url in url_cache:
+            return url_cache[url]
+            
+        if url in processing_urls:
+            await asyncio.sleep(1)
+            return await self.rate_limited_request(url, **kwargs)
+            
+        processing_urls.add(url)
+        try:
+            async with self.semaphore:
+                for attempt in range(MAX_RETRIES):
+                    try:
+                        result = await self._do_request(url, **kwargs)
+                        url_cache[url] = result
+                        return result
+                    except (aiohttp.client_exceptions.ClientError,
+                           asyncio.exceptions.TimeoutError) as e:
+                        if attempt == MAX_RETRIES - 1:
+                            raise
+                        await asyncio.sleep(2 ** attempt)
+        finally:
+            processing_urls.remove(url)
+
+    async def _do_request(self, url: str, **kwargs):
+        """Actual request implementation"""
+        if kwargs.get('method') == 'static':
+            return await self.scrape_static_async(url, **kwargs)
+        elif kwargs.get('method') == 'javascript':
+            return await self.scrape_javascript_async(url, **kwargs)
+        return await self.auto_scrape_async(url, **kwargs)
+
 # สร้าง scraper instance
 scraper = AsyncWebScraper()
 
@@ -432,64 +483,47 @@ async def scrape_multiple_async(request: MultipleScrapeRequest, background_tasks
     return {"task_id": task_id, "status": "queued", "total_urls": len(request.urls)}
 
 async def process_multiple_urls(task_id: str, request: MultipleScrapeRequest):
-    """Process multiple URLs in background"""
+    """Process multiple URLs in background with improved concurrency"""
     try:
         task_storage[task_id]['status'] = 'running'
-        results = []
         
-        for i, url in enumerate(request.urls):
-            start_time = time.time()
-            
+        # สร้าง tasks สำหรับแต่ละ URL
+        tasks = []
+        for url in request.urls:
+            kwargs = {
+                'method': request.method,
+                'wait_for_element': request.wait_for_element,
+                'wait_time': request.wait_time,
+                'include_html': request.include_html,
+                'include_images': request.include_images,
+                'include_links': request.include_links
+            }
+            tasks.append(scraper.rate_limited_request(str(url), **kwargs))
+
+        # รอให้ทุก task เสร็จสิ้น
+        results = []
+        for i, task in enumerate(asyncio.as_completed(tasks)):
             try:
-                url_str = str(url)
-                kwargs = {
-                    'wait_for_element': request.wait_for_element,
-                    'wait_time': request.wait_time,
-                    'include_html': request.include_html,
-                    'include_images': request.include_images,
-                    'include_links': request.include_links
-                }
-                
-                if request.method == 'static':
-                    data = await scraper.scrape_static_async(url_str, **kwargs)
-                    method_used = 'static'
-                elif request.method == 'javascript':
-                    data = await scraper.scrape_javascript_async(url_str, **kwargs)
-                    method_used = 'javascript'
-                else:  # auto
-                    data = await scraper.auto_scrape_async(url_str, **kwargs)
-                    method_used = data.get('method', 'auto')
-                
-                processing_time = time.time() - start_time
-                
+                data = await task
                 results.append({
                     'success': True,
                     'data': data,
-                    'method_used': method_used,
-                    'timestamp': datetime.now().isoformat(),
-                    'processing_time': round(processing_time, 2)
+                    'method_used': data.get('method', 'auto'),
+                    'timestamp': datetime.now().isoformat()
                 })
-                
             except Exception as e:
                 results.append({
                     'success': False,
                     'error': str(e),
-                    'timestamp': datetime.now().isoformat(),
-                    'processing_time': round(time.time() - start_time, 2)
+                    'timestamp': datetime.now().isoformat()
                 })
             
-            # อัปเดต progress
             task_storage[task_id]['progress'] = i + 1
-            
-            # พักระหว่าง URLs
-            if i < len(request.urls) - 1 and request.delay > 0:
-                await asyncio.sleep(request.delay)
-        
-        # เสร็จสิ้น
+
         task_storage[task_id]['status'] = 'completed'
         task_storage[task_id]['result'] = results
         task_storage[task_id]['completed_at'] = datetime.now().isoformat()
-        
+
     except Exception as e:
         task_storage[task_id]['status'] = 'failed'
         task_storage[task_id]['error'] = str(e)

@@ -1,7 +1,7 @@
 version: 3
 
 agent:
-  authtoken: # Replace with your ngrok authtoken
+  authtoken: 7gbN33751oqnkcn8e3PN3_6Gh8SFoFs5Ssdb2sogPAB
   # You can get it from https://ngrok.com
 tunnels:
   n8n:
