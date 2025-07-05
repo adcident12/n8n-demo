@@ -13,7 +13,7 @@
 ### 🧠 Workflow 1: Web Content Processing & Discord AI Summary & Broadcast LINE
 
 #### Overview
-This n8n workflow automates the process of extracting important content from multiple web pages and processing it with AI assistance. The workflow is designed to scrape content from various positions (URLs), extract key information, and use AI to analyze and rearrange the content before sending it to Discord.
+This n8n workflow automates the process of extracting important content from multiple web pages and processing it with AI assistance. The workflow is designed to scrape content from various positions (URLs), extract key information, and use AI to analyze and rearrange the content before sending it to Discord, and save to Vector DB.
 
 #### Components
 
@@ -104,7 +104,7 @@ This workflow adds a conversational AI system that connects to a LINE Messaging 
 ### 🧠 Workflow 1: ดึงข้อมูลจากเว็บและสรุปด้วย AI ส่งไป Discord และ Broadcast LINE
 
 #### ภาพรวม
-Workflow นี้จะช่วยดึงข้อมูลจากหลายเว็บไซต์, สกัดข้อมูลสำคัญ, วิเคราะห์ด้วย AI และส่งไปยัง Discord โดยอัตโนมัติ เหมาะกับการติดตามข่าว การคัดกรองเนื้อหา และรายงานอัจฉริยะ
+Workflow นี้จะช่วยดึงข้อมูลจากหลายเว็บไซต์, สกัดข้อมูลสำคัญ, วิเคราะห์ด้วย AI และส่งไปยัง Discord โดยอัตโนมัติ เหมาะกับการติดตามข่าว การคัดกรองเนื้อหา และรายงานอัจฉริยะพร้อมทั้งบันทึกลง Vector DB
 
 #### ส่วนประกอบ
 
