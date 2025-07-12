@@ -3,7 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "modelName": "models/gemini-2.5-flash",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
@@ -23,7 +22,6 @@
     },
     {
       "parameters": {
-        "modelName": "models/gemini-2.5-flash",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
@@ -343,8 +341,9 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "bdfb5a90-c2e1-4221-b954-a9ce9b691bf3",
+  "versionId": "04efea5b-f84b-4504-af76-a76bf5d1f1ef",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "5b31857f7d08120faafcdd926d671fca000c72140c4dcb1e24d490c2488973b8"
   },
   "id": "txJk2FrsFWoe91bG",

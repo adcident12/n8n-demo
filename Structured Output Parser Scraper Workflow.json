@@ -1,0 +1,249 @@
+{
+  "type": "object",
+  "title": "Dota 2 Heroes by Role",
+  "description": "Schema for Dota 2 hero statistics organized by role",
+  "properties": {
+    "carry": {
+      "type": "array",
+      "description": "Carry role heroes",
+      "items": {
+        "type": "object",
+        "properties": {
+          "hero": {
+            "type": "string",
+            "description": "Hero name",
+            "minLength": 1
+          },
+          "matches": {
+            "type": "integer",
+            "description": "Number of matches played",
+            "minimum": 0
+          },
+          "winrate": {
+            "type": "number",
+            "description": "Win rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "contest_rate": {
+            "type": "number",
+            "description": "Contest rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "rating": {
+            "type": "integer",
+            "description": "Hero rating",
+            "minimum": 0
+          },
+          "facet": {
+            "type": "string",
+            "description": "Hero facet",
+            "minLength": 1
+          },
+          "effect": {
+            "type": "string",
+            "description": "Facet effect description",
+            "minLength": 1
+          }
+        },
+        "required": ["hero", "matches", "winrate", "contest_rate", "rating", "facet", "effect"],
+        "additionalProperties": false
+      }
+    },
+    "midlane": {
+      "type": "array",
+      "description": "Mid lane role heroes",
+      "items": {
+        "type": "object",
+        "properties": {
+          "hero": {
+            "type": "string",
+            "description": "Hero name",
+            "minLength": 1
+          },
+          "matches": {
+            "type": "integer",
+            "description": "Number of matches played",
+            "minimum": 0
+          },
+          "winrate": {
+            "type": "number",
+            "description": "Win rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "contest_rate": {
+            "type": "number",
+            "description": "Contest rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "rating": {
+            "type": "integer",
+            "description": "Hero rating",
+            "minimum": 0
+          },
+          "facet": {
+            "type": "string",
+            "description": "Hero facet",
+            "minLength": 1
+          },
+          "effect": {
+            "type": "string",
+            "description": "Facet effect description",
+            "minLength": 1
+          }
+        },
+        "required": ["hero", "matches", "winrate", "contest_rate", "rating", "facet", "effect"],
+        "additionalProperties": false
+      }
+    },
+    "offlane": {
+      "type": "array",
+      "description": "Offlane role heroes",
+      "items": {
+        "type": "object",
+        "properties": {
+          "hero": {
+            "type": "string",
+            "description": "Hero name",
+            "minLength": 1
+          },
+          "matches": {
+            "type": "integer",
+            "description": "Number of matches played",
+            "minimum": 0
+          },
+          "winrate": {
+            "type": "number",
+            "description": "Win rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "contest_rate": {
+            "type": "number",
+            "description": "Contest rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "rating": {
+            "type": "integer",
+            "description": "Hero rating",
+            "minimum": 0
+          },
+          "facet": {
+            "type": "string",
+            "description": "Hero facet",
+            "minLength": 1
+          },
+          "effect": {
+            "type": "string",
+            "description": "Facet effect description",
+            "minLength": 1
+          }
+        },
+        "required": ["hero", "matches", "winrate", "contest_rate", "rating", "facet", "effect"],
+        "additionalProperties": false
+      }
+    },
+    "support": {
+      "type": "array",
+      "description": "Support role heroes",
+      "items": {
+        "type": "object",
+        "properties": {
+          "hero": {
+            "type": "string",
+            "description": "Hero name",
+            "minLength": 1
+          },
+          "matches": {
+            "type": "integer",
+            "description": "Number of matches played",
+            "minimum": 0
+          },
+          "winrate": {
+            "type": "number",
+            "description": "Win rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "contest_rate": {
+            "type": "number",
+            "description": "Contest rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "rating": {
+            "type": "integer",
+            "description": "Hero rating",
+            "minimum": 0
+          },
+          "facet": {
+            "type": "string",
+            "description": "Hero facet",
+            "minLength": 1
+          },
+          "effect": {
+            "type": "string",
+            "description": "Facet effect description",
+            "minLength": 1
+          }
+        },
+        "required": ["hero", "matches", "winrate", "contest_rate", "rating", "facet", "effect"],
+        "additionalProperties": false
+      }
+    },
+    "hard_support": {
+      "type": "array",
+      "description": "Hard support role heroes",
+      "items": {
+        "type": "object",
+        "properties": {
+          "hero": {
+            "type": "string",
+            "description": "Hero name",
+            "minLength": 1
+          },
+          "matches": {
+            "type": "integer",
+            "description": "Number of matches played",
+            "minimum": 0
+          },
+          "winrate": {
+            "type": "number",
+            "description": "Win rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "contest_rate": {
+            "type": "number",
+            "description": "Contest rate percentage",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "rating": {
+            "type": "integer",
+            "description": "Hero rating",
+            "minimum": 0
+          },
+          "facet": {
+            "type": "string",
+            "description": "Hero facet",
+            "minLength": 1
+          },
+          "effect": {
+            "type": "string",
+            "description": "Facet effect description",
+            "minLength": 1
+          }
+        },
+        "required": ["hero", "matches", "winrate", "contest_rate", "rating", "facet", "effect"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["carry", "midlane", "offlane", "support", "hard_support"],
+  "additionalProperties": false
+}

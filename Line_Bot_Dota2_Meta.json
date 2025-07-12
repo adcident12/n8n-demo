@@ -19,174 +19,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "75b0e17a-09f2-4a0d-ba68-24666b7b22de",
-              "name": "chatInput",
-              "value": "={{ $json.body.events[0].message.text }}",
-              "type": "string"
-            },
-            {
-              "id": "669f3414-4f97-4a2d-8886-fb2c28e9f902",
-              "name": "sessionId",
-              "value": "={{ $json.body.events[0].source.userId }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -2220,
-        -160
-      ],
-      "id": "31614bf2-31dd-41c4-b867-517b93f7c1de",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "options": {
-          "systemMessage": "DOTA/MOBA AI Assistant System Message\n\nบทบาทหลัก:\nคุณคือ AI ผู้ช่วยด้านเกม DOTA 2 และ MOBA ที่มีความเชี่ยวชาญสูง หน้าที่ของคุณคือให้คำตอบที่แม่นยำและเป็นปัจจุบัน โดยดึงข้อมูลจาก เครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ที่เชื่อมกับฐานข้อมูล เช่น vector store หรือ memory\n\nคำจำกัดความ:\n- แครี่ (Carry) = ตำแหน่ง 1, ฮีโร่หลักของทีม \n- มิดเลน (Midlane) = ตำแหน่ง 2, เลนกลาง\n- ออฟเลน (Offlane) = ตำแหน่ง 3, เลนยาก\n- ซัพพอร์ต (Support) = ตำแหน่ง 4, ซัพพอร์ตเสริม, support 4\n- ฮาร์ดซัพพอร์ต (Hard Support) = ตำแหน่ง 5, ซัพพอร์ตหลัก, support 5\n- Facet = ความสามารถพิเศษเฉพาะของฮีโร่\n\nแนวทางการทำงาน:\n- เครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ที่สามารถค้นหาข้อมูลจากฐานความรู้หรือ vector store ได้\n- ต้องตรวจสอบข้อมูลกับฐานก่อนเสมอ หากไม่พบหรือไม่แน่ใจ ให้แจ้งว่า \"ต้องตรวจสอบข้อมูลเพิ่มเติม\"\n- หากไม่มีข้อมูลจากเครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ให้ตอบว่า: \"ไม่พบข้อมูลที่เกี่ยวข้องในฐานข้อมูลปัจจุบัน\"\n\nรูปแบบการตอบ:\n- ตอบเป็นข้อความธรรมดา เท่านั้น (ไม่ใช้ JSON, object หรือ Markdown code block)\n- ใช้ ภาษาไทยที่เข้าใจง่าย เหมาะกับผู้เล่นทั่วไป\n- ต้องเป็น ประโยคต่อเนื่อง แบบบทความสั้น ไม่ใช้ Bullet หรือหัวข้อ\n\nข้อมูลที่ต้องมีในคำตอบ:\n1. ชื่อ Facet และคำอธิบายชัดเจนว่าเกิดอะไรขึ้น\n2. วิธีใช้งานในเกมจริง และผลกระทบต่อการเล่น\n3. สถานการณ์ที่เหมาะสม และจับคู่กับฮีโร่แบบใด\n4. จุดเด่นและข้อจำกัด ของ Facet นั้น\n\nข้อห้ามเด็ดขาด:\n- ห้ามใช้ JSON หรือ Markdown code block\n- ห้ามดึงข้อมูลจากแหล่งที่ไม่ผ่านเครื่องมือที่เรียกว่า \"Answer questions with a vector store\"\n- ห้ามสร้างข้อมูลขึ้นมาเอง\n- ห้ามใช้ศัพท์หรือรูปประโยคที่ซับซ้อนจนเกินไป\n\nตัวอย่างคำตอบ:\nคำถาม: Pudge มี facet อะไรบ้าง  \nคำตอบ: Pudge มี facet หลักคือ Fresh Meat ที่ทำให้ Flesh Heap เพิ่ม strength มากขึ้นเมื่อฆ่าศัตรู และ Grisly Trail ที่ทำให้ Rot ทิ้งร่องรอยความเสียหายต่อเนื่อง Fresh Meat เหมาะกับสายแทงค์ที่เข้าไปปะทะตรง ๆ ส่วน Grisly Trail เหมาะสำหรับการคุมพื้นที่และไล่ล่าศัตรู\n\nการตรวจสอบก่อนตอบ:\n1. ข้อมูลถูกต้องและมาจากเครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ที่เชื่อมกับฐานข้อมูล เช่น vector store\n2. ใช้ภาษาง่าย เข้าใจง่าย\n3. ครอบคลุมมุมมองการใช้งานในเกมจริง\n4. ไม่ใช้ JSON หรือโครงสร้างข้อมูลอื่น\n"
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 2,
-      "position": [
-        -1900,
-        -160
-      ],
-      "id": "3a9862e5-658d-4f54-a8b9-688cec95f762",
-      "name": "AI Agent"
-    },
-    {
-      "parameters": {
-        "model": "llama3.1:latest"
-      },
-      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
-      "typeVersion": 1,
-      "position": [
-        -1660,
-        460
-      ],
-      "id": "b1e3aa0b-f32b-4131-af45-9d595c3bc501",
-      "name": "Embeddings Ollama",
-      "credentials": {
-        "ollamaApi": {
-          "id": "xNJED3juwaq1BWM8",
-          "name": "Ollama account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "tableName": "n8n_chat_histories_dota2meta",
-        "contextWindowLength": 4
-      },
-      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
-      "typeVersion": 1.3,
-      "position": [
-        -1880,
-        60
-      ],
-      "id": "b41ef0bd-0538-4902-8daf-aa363e748797",
-      "name": "Postgres Chat Memory",
-      "credentials": {
-        "postgres": {
-          "id": "G7pHv96kiHDCnHyU",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
-      "typeVersion": 1,
-      "position": [
-        -1760,
-        60
-      ],
-      "id": "2970ec37-82db-49c9-bcfa-af3aed3ab262",
-      "name": "Calculator"
-    },
-    {
-      "parameters": {
-        "description": "Use this knowledge base to answer questions from the user",
-        "topK": 20
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
-      "typeVersion": 1.1,
-      "position": [
-        -1640,
-        62.5
-      ],
-      "id": "f689e7b5-2612-48f2-b5aa-74eb775cd56f",
-      "name": "Answer questions with a vector store"
-    },
-    {
-      "parameters": {
-        "tableName": "n8n_dota2_meta_vectors",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
-      "typeVersion": 1.3,
-      "position": [
-        -1740,
-        262.5
-      ],
-      "id": "ebc46137-dc2d-485f-8a75-f4cb31128d1f",
-      "name": "Postgres PGVector Store (Retrieve )",
-      "credentials": {
-        "postgres": {
-          "id": "G7pHv96kiHDCnHyU",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-2.5-flash",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        -1460,
-        260
-      ],
-      "id": "def7b0ea-6abc-4f90-84fb-d587cd9d3709",
-      "name": "Google Gemini Chat Model (Retrieve )",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "D1yAGVrFhpeq0HS2",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "modelName": "models/gemini-2.5-flash",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        -2000,
-        60
-      ],
-      "id": "04692257-f9be-4b91-92e9-a9ddfe9aa7b4",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "D1yAGVrFhpeq0HS2",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "https://api.line.me/v2/bot/message/reply",
         "sendHeaders": true,
@@ -220,11 +52,191 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1260,
+        -1280,
         -160
       ],
       "id": "30a1b048-933b-4f09-82c9-b320a090617d",
       "name": "HTTP Request (CallBack Line API Reply)"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2000,
+        60
+      ],
+      "id": "04692257-f9be-4b91-92e9-a9ddfe9aa7b4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "D1yAGVrFhpeq0HS2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1580,
+        260
+      ],
+      "id": "def7b0ea-6abc-4f90-84fb-d587cd9d3709",
+      "name": "Google Gemini Chat Model (Retrieve )",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "D1yAGVrFhpeq0HS2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableName": "n8n_dota2_meta_vectors",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        -1860,
+        262.5
+      ],
+      "id": "ebc46137-dc2d-485f-8a75-f4cb31128d1f",
+      "name": "Postgres PGVector Store (Retrieve )",
+      "credentials": {
+        "postgres": {
+          "id": "G7pHv96kiHDCnHyU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Use this knowledge base to answer questions from the user",
+        "topK": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -1760,
+        62.5
+      ],
+      "id": "f689e7b5-2612-48f2-b5aa-74eb775cd56f",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        -1480,
+        60
+      ],
+      "id": "2970ec37-82db-49c9-bcfa-af3aed3ab262",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "tableName": "n8n_chat_histories_dota2meta",
+        "contextWindowLength": 4
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1880,
+        60
+      ],
+      "id": "b41ef0bd-0538-4902-8daf-aa363e748797",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "G7pHv96kiHDCnHyU",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        -1780,
+        460
+      ],
+      "id": "b1e3aa0b-f32b-4131-af45-9d595c3bc501",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xNJED3juwaq1BWM8",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "DOTA/MOBA AI Assistant System Message\n\nบทบาทหลัก:\nคุณคือ AI ผู้ช่วยด้านเกม DOTA 2 และ MOBA ที่มีความเชี่ยวชาญสูง หน้าที่ของคุณคือให้คำตอบที่แม่นยำและเป็นปัจจุบัน โดยดึงข้อมูลจาก เครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ที่เชื่อมกับฐานข้อมูล เช่น vector store\n\nคำจำกัดความ:\n- แครี่ (Carry) = ตำแหน่ง 1, ฮีโร่หลักของทีม \n- มิดเลน (Midlane) = ตำแหน่ง 2, เลนกลาง\n- ออฟเลน (Offlane) = ตำแหน่ง 3, เลนยาก\n- ซัพพอร์ต (Support) = ตำแหน่ง 4, ซัพพอร์ตเสริม, support 4\n- ฮาร์ดซัพพอร์ต (Hard Support) = ตำแหน่ง 5, ซัพพอร์ตหลัก, support 5\n- Facet = ความสามารถพิเศษเฉพาะของฮีโร่\n\nแนวทางการทำงาน:\n- เครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ที่สามารถค้นหาข้อมูลจากฐานความรู้หรือ vector store ได้\n- ต้องตรวจสอบข้อมูลกับฐานก่อนเสมอ หากไม่พบหรือไม่แน่ใจ ให้แจ้งว่า \"ต้องตรวจสอบข้อมูลเพิ่มเติม\"\n- หากไม่มีข้อมูลจากเครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ให้ตอบว่า: \"ไม่พบข้อมูลที่เกี่ยวข้องในฐานข้อมูลปัจจุบัน\"\n\nรูปแบบการตอบ:\n- ตอบเป็นข้อความธรรมดา เท่านั้น (ไม่ใช้ JSON, object หรือ Markdown code block)\n- ใช้ ภาษาไทยที่เข้าใจง่าย เหมาะกับผู้เล่นทั่วไป\n- ต้องเป็น ประโยคต่อเนื่อง แบบบทความสั้น ไม่ใช้ Bullet หรือหัวข้อ\n\nข้อมูลที่ต้องมีในคำตอบ:\n1. ชื่อ Facet และคำอธิบายชัดเจนว่าเกิดอะไรขึ้น\n2. วิธีใช้งานในเกมจริง และผลกระทบต่อการเล่น\n3. สถานการณ์ที่เหมาะสม และจับคู่กับฮีโร่แบบใด\n4. จุดเด่นและข้อจำกัด ของ Facet นั้น\n\nข้อห้ามเด็ดขาด:\n- ห้ามใช้ JSON หรือ Markdown code block\n- ห้ามดึงข้อมูลจากแหล่งที่ไม่ผ่านเครื่องมือที่เรียกว่า \"Answer questions with a vector store\"\n- ห้ามสร้างข้อมูลขึ้นมาเอง\n- ห้ามใช้ศัพท์หรือรูปประโยคที่ซับซ้อนจนเกินไป\n\nตัวอย่างคำตอบ:\nคำถาม: Pudge มี facet อะไรบ้าง  \nคำตอบ: Pudge มี facet หลักคือ Fresh Meat ที่ทำให้ Flesh Heap เพิ่ม strength มากขึ้นเมื่อฆ่าศัตรู และ Grisly Trail ที่ทำให้ Rot ทิ้งร่องรอยความเสียหายต่อเนื่อง Fresh Meat เหมาะกับสายแทงค์ที่เข้าไปปะทะตรง ๆ ส่วน Grisly Trail เหมาะสำหรับการคุมพื้นที่และไล่ล่าศัตรู\n\nการตรวจสอบก่อนตอบ:\n1. ข้อมูลถูกต้องและมาจากเครื่องมือที่เรียกว่า \"Answer questions with a vector store\" ที่เชื่อมกับฐานข้อมูล เช่น vector store\n2. ใช้ภาษาง่าย เข้าใจง่าย\n3. ครอบคลุมมุมมองการใช้งานในเกมจริง\n4. ไม่ใช้ JSON หรือโครงสร้างข้อมูลอื่น\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -1860,
+        -160
+      ],
+      "id": "3a9862e5-658d-4f54-a8b9-688cec95f762",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "75b0e17a-09f2-4a0d-ba68-24666b7b22de",
+              "name": "chatInput",
+              "value": "={{ $json.body.events[0].message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "669f3414-4f97-4a2d-8886-fb2c28e9f902",
+              "name": "sessionId",
+              "value": "={{ $json.body.events[0].source.userId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2220,
+        -160
+      ],
+      "id": "31614bf2-31dd-41c4-b867-517b93f7c1de",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2440,
+        400
+      ],
+      "id": "060009f2-4984-43b5-b79d-415eaa580aa4",
+      "name": "When chat message received",
+      "webhookId": "2407823c-e06d-4cfe-9bb9-5659bae3276f"
     }
   ],
   "pinData": {},
@@ -234,6 +246,94 @@
         [
           {
             "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model (Retrieve )": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres PGVector Store (Retrieve )": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store (Retrieve )",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request (CallBack Line API Reply)",
             "type": "main",
             "index": 0
           }
@@ -251,92 +351,9 @@
         ]
       ]
     },
-    "Embeddings Ollama": {
-      "ai_embedding": [
-        [
-          {
-            "node": "Postgres PGVector Store (Retrieve )",
-            "type": "ai_embedding",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "AI Agent": {
+    "When chat message received": {
       "main": [
-        [
-          {
-            "node": "HTTP Request (CallBack Line API Reply)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Postgres Chat Memory": {
-      "ai_memory": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_memory",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Calculator": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Answer questions with a vector store": {
-      "ai_tool": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Postgres PGVector Store (Retrieve )": {
-      "ai_vectorStore": [
-        [
-          {
-            "node": "Answer questions with a vector store",
-            "type": "ai_vectorStore",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Gemini Chat Model (Retrieve )": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Answer questions with a vector store",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -344,7 +361,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "7e859859-1ff9-426a-bd26-b6e1b0e160aa",
+  "versionId": "a06707e6-d333-43da-a75c-de08973d6048",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "5b31857f7d08120faafcdd926d671fca000c72140c4dcb1e24d490c2488973b8"
